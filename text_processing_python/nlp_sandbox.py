@@ -5,7 +5,6 @@ import operator
 # To do's:
 	# strip punctuation (i'll work on this with regexp)
 	# ignore case
-	# average word length
 	# most common first word in sentence
 
 # probably want a File object for each file being tested and categorized
@@ -17,6 +16,7 @@ class File:
 	triGrams = [];
 	quadGrams = [];
 	content = "";
+	averageWordLength = 0;
 
 	def __init__(self, path):
 		self.path = path;
@@ -26,6 +26,7 @@ class File:
 		self.biGrams = self.getNGrams(2);
 		self.triGrams = self.getNGrams(3);
 		self.quadGrams = self.getNGrams(4);
+		self.averageWordLength = self.getAverageWordLength();
 
 	def printFields(self):
 		print "FILE:"
@@ -35,11 +36,21 @@ class File:
 		print "\tBi-grams:", self.biGrams;
 		print "\tTri-grams:", self.triGrams;
 		print "\tQuad-grams:", self.quadGrams;
+		print "\tAvg Word Length:", self.averageWordLength, " letters";
 
 	# return entire file
 	def getContent(self):
 		content = open(self.path, "r").read();
 		return content;
+		
+	# average word length of the file
+	def getAverageWordLength(self):
+		words = self.content.split(" ");
+		totalLength = 0;
+		for i in range(0, len(words)):
+			totalLength = totalLength + len(words[i])
+		avg = totalLength/len(words)
+		return avg
 
 	# create dictionary for words and their number of occurences (need to consider case here...)
 	def getUniqueWords(self):
