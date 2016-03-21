@@ -2,6 +2,12 @@ import os
 import sys
 import operator
 
+# To do's:
+	# strip punctuation
+	# ignore case
+	# average word length
+	# most common first word in sentence
+
 # probably want a File object for each file being tested and categorized
 class File:
 	path = "";
