@@ -5,7 +5,6 @@ import re
 import string
 
 # To do's:
-	# strip punctuation (i'll work on this with regexp)
 	# ignore case
 	# most common first word in sentence
 
@@ -20,7 +19,7 @@ class File:
 	content = "";
 	averageWordLength = 0;
 	contentNoPunctuation = "";
-
+	mostCommonFirstWord = 0;
 	def __init__(self, path):
 		self.path = path;
 		self.content = self.getContent();
@@ -31,7 +30,7 @@ class File:
 		self.quadGrams = self.getNGrams(4);
 		self.averageWordLength = self.getAverageWordLength();
 		self.contentNoPunctuation = self.getContentNoPunctuation();
-
+		self.mostCommonFirstWord = self.getMostCommonFirstWord();
 	def printFields(self):
 		# print "FILE:"
 		# # print "\tContent:", self.content;
@@ -90,6 +89,18 @@ class File:
 			nGrams.append(self.content[i : (i + n)]);
 			j = j + 1;
 		return nGrams;
+
+	def getMostCommonFirstWord(self):
+		firstWords = {};
+		words = self.content.split(" ");
+		for i in range(0,len(words)):
+			print words[i];
+			str = re.match('\w+.', words[i], re.IGNORECASE);
+			if str:
+				firstWords[words[i+1]] = firstWords[words[i+1]] + 1;
+		mostCommonFirsWord = max(firstWords.iteritems(), key = operator.itemgetter(1))[0];
+		print firstWords;
+		return mostCommonFirsWord;
 
 file = File("testFile.txt");
 file.printFields();
