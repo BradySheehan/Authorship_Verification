@@ -1,6 +1,8 @@
 import os
 import sys
 import operator
+import re
+import string
 
 # To do's:
 	# strip punctuation (i'll work on this with regexp)
@@ -17,6 +19,7 @@ class File:
 	quadGrams = [];
 	content = "";
 	averageWordLength = 0;
+	contentNoPunctuation = "";
 
 	def __init__(self, path):
 		self.path = path;
@@ -27,22 +30,32 @@ class File:
 		self.triGrams = self.getNGrams(3);
 		self.quadGrams = self.getNGrams(4);
 		self.averageWordLength = self.getAverageWordLength();
+		self.contentNoPunctuation = self.getContentNoPunctuation();
 
 	def printFields(self):
-		print "FILE:"
-		# print "\tContent:", self.content;
-		print "\tWord Count:", self.uniqueWords;
-		print "\tMost Common Word:", self.mostCommonWord;
-		print "\tBi-grams:", self.biGrams;
-		print "\tTri-grams:", self.triGrams;
-		print "\tQuad-grams:", self.quadGrams;
-		print "\tAvg Word Length:", self.averageWordLength, " letters";
+		# print "FILE:"
+		# # print "\tContent:", self.content;
+		# print "\nWord Count:", self.uniqueWords;
+		# print "\nMost Common Word:", self.mostCommonWord;
+		# print "\nBi-grams:", self.biGrams;
+		# print "\nTri-grams:", self.triGrams;
+		# print "\nQuad-grams:", self.quadGrams;
+		# print "\nAvg Word Length:", self.averageWordLength, " letters";
+		print "\nFILE no punctuation", self.contentNoPunctuation;
 
 	# return entire file
 	def getContent(self):
 		content = open(self.path, "r").read();
 		return content;
-		
+
+	# return entire file without the punctuation
+	def getContentNoPunctuation(self):
+		f = open(self.path,"r");
+		contentNoPunctuation = "";
+		for line in f:
+			contentNoPunctuation = contentNoPunctuation + re.sub('\W', ' ', line);
+		return contentNoPunctuation;
+
 	# average word length of the file
 	def getAverageWordLength(self):
 		words = self.content.split(" ");
