@@ -40,7 +40,7 @@ class File:
 		# print "\nTri-grams:", self.triGrams;
 		# print "\nQuad-grams:", self.quadGrams;
 		# print "\nAvg Word Length:", self.averageWordLength, " letters";
-		# print "\nFILE no punctuation", self.contentNoPunctuation;
+		print "\nFILE no punctuation", self.contentNoPunctuation;
 		print "\n mostCommonFirstWord", self.mostCommonFirstWord;
 
 	# return entire file
@@ -68,7 +68,8 @@ class File:
 	# create dictionary for words and their number of occurences (need to consider case here...)
 	def getUniqueWords(self):
 		uniqueWords = {};
-		words = self.contentNoPunctuation.split(" ");
+		content2 = self.contentNoPunctuation.lower();
+		words = content2.split(" ");
 		for i in range(0, len(words)):
 			if words[i] in uniqueWords and words[i] != '':
 				uniqueWords[words[i]] = uniqueWords[words[i]] + 1;
