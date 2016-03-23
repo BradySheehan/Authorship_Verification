@@ -7,8 +7,8 @@ import string
 # To do's:
 	# ignore case
 	# most common first word in sentence
+	# average sentence length
 
-# probably want a File object for each file being tested and categorized
 class File:
 	path = "";
 	uniqueWords = {};
@@ -30,7 +30,10 @@ class File:
 		self.triGrams = self.getNGrams(3);
 		self.quadGrams = self.getNGrams(4);
 		self.averageWordLength = self.getAverageWordLength();
+		self.averageSentenceLength = self.getAverageSentenceLength();
+		self.contentNoPunctuation = self.getContentNoPunctuation();
 		self.mostCommonFirstWord = self.getMostCommonFirstWord();
+		
 	def printFields(self):
 		# print "FILE:"
 		# # print "\tContent:", self.content;
@@ -61,9 +64,9 @@ class File:
 		words = self.content.split(" ");
 		totalLength = 0;
 		for i in range(0, len(words)):
-			totalLength = totalLength + len(words[i])
-		avg = totalLength/len(words)
-		return avg
+			totalLength = totalLength + len(words[i]);
+		avgWordLength = totalLength/len(words);
+		return avgWordLength;
 
 	# create dictionary for words and their number of occurences (need to consider case here...)
 	def getUniqueWords(self):
