@@ -7,7 +7,6 @@ import string
 # To do's:
 	# ignore case
 	# most common first word in sentence
-	# average sentence length
 
 class File:
 	path = "";
@@ -20,6 +19,7 @@ class File:
 	averageWordLength = 0;
 	contentNoPunctuation = "";
 	mostCommonFirstWord = 0;
+	
 	def __init__(self, path):
 		self.path = path;
 		self.content = self.getContent();
@@ -29,27 +29,35 @@ class File:
 		self.biGrams = self.getNGrams(2);
 		self.triGrams = self.getNGrams(3);
 		self.quadGrams = self.getNGrams(4);
+		self.averageSentenceLength = self.getAverageSentenceLength();# 
 		self.averageWordLength = self.getAverageWordLength();
-		self.averageSentenceLength = self.getAverageSentenceLength();
 		self.contentNoPunctuation = self.getContentNoPunctuation();
 		self.mostCommonFirstWord = self.getMostCommonFirstWord();
 		
 	def printFields(self):
 		# print "FILE:"
 		# # print "\tContent:", self.content;
-		print "\nWord Count:", self.uniqueWords;
-		print "\nMost Common Word:", self.mostCommonWord;
+		# print "\nWord Count:", self.uniqueWords;
+		# print "\nMost Common Word:", self.mostCommonWord;
 		# print "\nBi-grams:", self.biGrams;
 		# print "\nTri-grams:", self.triGrams;
 		# print "\nQuad-grams:", self.quadGrams;
-		# print "\nAvg Word Length:", self.averageWordLength, " letters";
-		print "\nFILE no punctuation", self.contentNoPunctuation;
-		print "\n mostCommonFirstWord", self.mostCommonFirstWord;
+		# print "\nAverage Word Length:", self.averageWordLength, " letters";
+		print "\nAverage Sentence Length: ", self.averageSentenceLength;
+		# print "\nFILE no punctuation", self.contentNoPunctuation;
+		# print "\n mostCommonFirstWord", self.mostCommonFirstWord;
 
 	# return entire file
 	def getContent(self):
 		content = open(self.path, "r").read();
 		return content;
+		
+	# return average sentence length
+	def getAverageSentenceLength(self):
+		numWords = len(self.content.split(" "));
+		numPeriods = self.content.count(".");
+		averageSentenceLength = numWords/numPeriods;
+		return averageSentenceLength;
 
 	# return entire file without the punctuation
 	def getContentNoPunctuation(self):
