@@ -36,16 +36,16 @@ class File:
 		
 	def printFields(self):
 		# print "FILE:"
-		# # print "\tContent:", self.content;
-		# print "\nWord Count:", self.uniqueWords;
-		# print "\nMost Common Word:", self.mostCommonWord;
+		# print "\tContent:", self.content;
+		print "\nWord Count:", self.uniqueWords;
+		print "\nMost Common Word:", self.mostCommonWord;
 		# print "\nBi-grams:", self.biGrams;
 		# print "\nTri-grams:", self.triGrams;
 		# print "\nQuad-grams:", self.quadGrams;
-		# print "\nAverage Word Length:", self.averageWordLength, " letters";
+		print "\nAverage Word Length:", self.averageWordLength, " letters";
 		print "\nAverage Sentence Length: ", self.averageSentenceLength;
 		# print "\nFILE no punctuation", self.contentNoPunctuation;
-		# print "\n mostCommonFirstWord", self.mostCommonFirstWord;
+		print "\nMost Common First Word: ", self.mostCommonFirstWord;
 
 	# return entire file
 	def getContent(self):
@@ -110,7 +110,7 @@ class File:
 		content2 = re.sub('^.\w|,|:|;', ' ', content2);
 		content2 = re.sub('[--]', ' ', content2);
 
-		print content2;
+		# print content2;
 		words = content2.split(" ");
 		for i in range(0,len(words)):
 			str = re.match('\w+.', words[i], re.IGNORECASE);
@@ -122,5 +122,5 @@ class File:
 		mostCommonFirsWord = max(firstWords.iterkeys(),key=lambda k: firstWords[k]);
 		return mostCommonFirsWord;
 
-file = File("testFile.txt");
+file = File("AFarewellToArms.txt");
 file.printFields();
