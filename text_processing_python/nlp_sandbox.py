@@ -33,7 +33,7 @@ class File:
 		self.averageWordLength = self.getAverageWordLength();
 		self.contentNoPunctuation = self.getContentNoPunctuation();
 		self.mostCommonFirstWord = self.getMostCommonFirstWord();
-		
+		self.wordFrequency = self.getWordsWithFrequency(10);
 	def printFields(self):
 		# print "FILE:"
 		# print "\tContent:", self.content;
@@ -46,6 +46,7 @@ class File:
 		print "\nAverage Sentence Length: ", self.averageSentenceLength;
 		# print "\nFILE no punctuation", self.contentNoPunctuation;
 		print "\nMost Common First Word: ", self.mostCommonFirstWord;
+		print "\nWords with frequency 10+: ", self.wordFrequency;
 
 	# return entire file
 	def getContent(self):
@@ -54,7 +55,9 @@ class File:
 		
 	# return average sentence length
 	def getAverageSentenceLength(self):
-		numWords = len(self.content.split(" "));
+		#i don't think counting words this way will work unless you do it on the no punctuation file
+		# numWords = len(self.content.split(" ")); 
+		numWords = len(self.contentNoPunctuation.split(" "));
 		numPeriods = self.content.count(".");
 		averageSentenceLength = numWords/numPeriods;
 		return averageSentenceLength;
@@ -109,7 +112,6 @@ class File:
 		content2 = re.sub("\s\s+", " ", content2);
 		content2 = re.sub('^.\w|,|:|;', ' ', content2);
 		content2 = re.sub('[--]', ' ', content2);
-
 		# print content2;
 		words = content2.split(" ");
 		for i in range(0,len(words)):
@@ -121,6 +123,12 @@ class File:
 					firstWords.update({words[i+1]:1});
 		mostCommonFirsWord = max(firstWords.iterkeys(),key=lambda k: firstWords[k]);
 		return mostCommonFirsWord;
+
+	def getWordsWithFrequency(self, frequency):
+		wordFreq = {};
+		for key, value in self.uniqueWords.iteritems():
+			if value >= frequency:
+				wordFreq.update({key:value});
 
 file = File("AFarewellToArms.txt");
 file.printFields();
