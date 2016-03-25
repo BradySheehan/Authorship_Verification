@@ -56,6 +56,7 @@ class File:
 	# return average sentence length
 	def getAverageSentenceLength(self):
 		#i don't think counting words this way will work unless you do it on the no punctuation file
+		#since documents like the constitutition have weird punctuation attached to words
 		# numWords = len(self.content.split(" ")); 
 		numWords = len(self.contentNoPunctuation.split(" "));
 		numPeriods = self.content.count(".");
