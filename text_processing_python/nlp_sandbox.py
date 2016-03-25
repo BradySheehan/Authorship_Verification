@@ -113,7 +113,6 @@ class File:
 		content2 = re.sub("\s\s+", " ", content2);
 		content2 = re.sub('^.\w|,|:|;', ' ', content2);
 		content2 = re.sub('[--]', ' ', content2);
-		# print content2;
 		words = content2.split(" ");
 		for i in range(0,len(words)):
 			str = re.match('\w+.', words[i], re.IGNORECASE);
