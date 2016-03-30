@@ -19,6 +19,7 @@ class File:
 	averageWordLength = 0;
 	contentNoPunctuation = "";
 	mostCommonFirstWord = 0;
+	rarestWords = {};
 	
 	def __init__(self, path):
 		self.path = path;
@@ -34,11 +35,12 @@ class File:
 		self.contentNoPunctuation = self.getContentNoPunctuation();
 		self.mostCommonFirstWord = self.getMostCommonFirstWord();
 		self.wordFrequency = self.getWordsWithFrequency(10);
+		self.rarestWords = self.getRarestWords(100, self.uniqueWords); # get 20 rarest words
+		
 	def printFields(self):
-		# print "FILE:"
-		# print "\tContent:", self.content;
-		print "\nWord Count:", self.uniqueWords;
-		print "\nMost Common Word:", self.mostCommonWord;
+		# print "Content:", self.content;
+		# print "Word Count:", self.uniqueWords;
+		print "Most Common Word:", self.mostCommonWord;
 		# print "\nBi-grams:", self.biGrams;
 		# print "\nTri-grams:", self.triGrams;
 		# print "\nQuad-grams:", self.quadGrams;
@@ -47,6 +49,7 @@ class File:
 		# print "\nFILE no punctuation", self.contentNoPunctuation;
 		print "\nMost Common First Word: ", self.mostCommonFirstWord;
 		print "\nWords with frequency 10+: ", self.wordFrequency;
+		print "\nRarest Words:", self.rarestWords;
 
 	# return entire file
 	def getContent(self):
@@ -55,8 +58,8 @@ class File:
 		
 	# return average sentence length
 	def getAverageSentenceLength(self):
-		#i don't think counting words this way will work unless you do it on the no punctuation file
-		#since documents like the constitutition have weird punctuation attached to words
+		# i don't think counting words this way will work unless you do it on the no punctuation file
+		# since documents like the constitutition have weird punctuation attached to words
 		# numWords = len(self.content.split(" ")); 
 		numWords = len(self.contentNoPunctuation.split(" "));
 		numPeriods = self.content.count(".");
@@ -121,7 +124,7 @@ class File:
 					firstWords.update({words[i+1]:firstWords[words[i+1]] + 1});
 				else:
 					firstWords.update({words[i+1]:1});
-		mostCommonFirsWord = max(firstWords.iterkeys(),key=lambda k: firstWords[k]);
+		mostCommonFirsWord = max(firstWords.iterkeys(), key = lambda k: firstWords[k]);
 		return mostCommonFirsWord;
 
 	def getWordsWithFrequency(self, frequency):
@@ -129,6 +132,14 @@ class File:
 		for key, value in self.uniqueWords.iteritems():
 			if value >= frequency:
 				wordFreq.update({key:value});
+				
+	# get n rarest words (should add check to make sure it's not a page number
+	def getRarestWords(self, n, wordCount):
+		sortedWordCount = sorted(wordCount.items(), key = operator.itemgetter(1));
+		rarestN = [];
+		for i in range(0,n):
+			rarestN.append(sortedWordCount[i])
+		return rarestN;
 
 file = File("AFarewellToArms.txt");
 file.printFields();
