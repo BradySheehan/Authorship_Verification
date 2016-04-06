@@ -132,8 +132,9 @@ class File:
 		for key, value in self.uniqueWords.iteritems():
 			if value >= frequency:
 				wordFreq.update({key:value});
-				
+
 	# get n rarest words (should add check to make sure it's not a page number
+	# should we not count numbers as words? 
 	def getRarestWords(self, n, wordCount):
 		sortedWordCount = sorted(wordCount.items(), key = operator.itemgetter(1));
 		rarestN = [];
