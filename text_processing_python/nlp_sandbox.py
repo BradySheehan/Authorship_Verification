@@ -5,8 +5,15 @@ import re
 import string
 
 # To do's:
-	# ignore case
-	# most common first word in sentence
+class Author:
+	File;
+	Features; #the features should be a vector we can input to the neural net
+
+
+# should we make a class of features and seperate the file itself in a class from the features
+# we compute from it??
+# We also need to figure out how to convert all these metrics to numeric values (which might
+# 	be a seperate class)
 
 class File:
 	path = "";
@@ -20,6 +27,8 @@ class File:
 	contentNoPunctuation = "";
 	mostCommonFirstWord = 0;
 	rarestWords = {};
+	wordFrequency = {};
+	numWords;
 	
 	def __init__(self, path):
 		self.path = path;
@@ -34,9 +43,9 @@ class File:
 		self.averageWordLength = self.getAverageWordLength();
 		self.contentNoPunctuation = self.getContentNoPunctuation();
 		self.mostCommonFirstWord = self.getMostCommonFirstWord();
-		self.wordFrequency = self.getWordsWithFrequency(10);
+		self.wordFrequency = self.getWordsWithFrequency(50);
 		self.rarestWords = self.getRarestWords(100, self.uniqueWords); # get 20 rarest words
-		
+
 	def printFields(self):
 		# print "Content:", self.content;
 		# print "Word Count:", self.uniqueWords;
@@ -48,22 +57,23 @@ class File:
 		print "\nAverage Sentence Length: ", self.averageSentenceLength;
 		# print "\nFILE no punctuation", self.contentNoPunctuation;
 		print "\nMost Common First Word: ", self.mostCommonFirstWord;
-		print "\nWords with frequency 10+: ", self.wordFrequency;
+		print "\nWords with frequency 50+: ", self.wordFrequency;
 		print "\nRarest Words:", self.rarestWords;
+		# print "number of words:", self.numWords;
 
 	# return entire file
 	def getContent(self):
 		content = open(self.path, "r").read();
 		return content;
-		
+
 	# return average sentence length
 	def getAverageSentenceLength(self):
 		# i don't think counting words this way will work unless you do it on the no punctuation file
 		# since documents like the constitutition have weird punctuation attached to words
 		# numWords = len(self.content.split(" ")); 
-		numWords = len(self.contentNoPunctuation.split(" "));
+		self.numWords = len(self.contentNoPunctuation.split(" "));
 		numPeriods = self.content.count(".");
-		averageSentenceLength = numWords/numPeriods;
+		averageSentenceLength = self.numWords/numPeriods;
 		return averageSentenceLength;
 
 	# return entire file without the punctuation
@@ -83,7 +93,7 @@ class File:
 		avgWordLength = totalLength/len(words);
 		return avgWordLength;
 
-	# create dictionary for words and their number of occurences (need to consider case here...)
+	# create dictionary for words and their number of occurences
 	def getUniqueWords(self):
 		uniqueWords = {};
 		content2 = self.contentNoPunctuation.lower();
@@ -132,6 +142,7 @@ class File:
 		for key, value in self.uniqueWords.iteritems():
 			if value >= frequency:
 				wordFreq.update({key:value});
+		return wordFreq;
 
 	# get n rarest words (should add check to make sure it's not a page number
 	# should we not count numbers as words? 
