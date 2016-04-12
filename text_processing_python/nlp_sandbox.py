@@ -28,6 +28,7 @@ class File:
 	rarestWords = {};
 	wordFrequency = {};
 	numWords = 0;
+	frequencies = [];
 	# numWords;
 	
 	def __init__(self, path):
@@ -37,7 +38,7 @@ class File:
 		self.numWords = self.getNumWords();
 		self.uniqueWords = self.getUniqueWords();
 		self.mostCommonWord = self.getMostCommonWord();
-		self.biGrams = self.getNGrams(2);
+		# self.biGrams = self.getNGrams(2);
 		# self.triGrams = self.getNGrams(3);
 		# self.quadGrams = self.getNGrams(4);
 		self.averageSentenceLength = self.getAverageSentenceLength();
@@ -45,7 +46,8 @@ class File:
 		self.contentNoPunctuation = self.getContentNoPunctuation();
 		self.mostCommonFirstWord = self.getMostCommonFirstWord();
 		self.wordFrequency = self.getWordsWithFrequency(50);
-		self.rarestWords = self.getRarestWords(20, self.uniqueWords); # get 20 rarest words
+		self.rarestWords = self.getRarestWords(2000, self.uniqueWords); # get (n, arg) rarest words
+		self.frequencies = self.getWordLengthFrequencies(self.contentNoPunctuation);
 
 	def printFields(self):
 		# print "Content:", self.content;
@@ -61,6 +63,8 @@ class File:
 		# print "\nWords with frequency 50+: ", self.wordFrequency;
 		# print "\nRarest Words:", self.rarestWords;
 		# print "number of words:", self.numWords;
+		print self.contentNoPunctuation;
+		print "Word Length Frequencies:", self.frequencies;
 		print self.contentNoPunctuation;
 
 	# return entire file
@@ -96,7 +100,23 @@ class File:
 			totalLength = totalLength + len(words[i]);
 		avgWordLength = totalLength/len(words);
 		return avgWordLength;
-
+			
+	# frequencies of word lengths over entire document (1-10, 11+)
+	def getWordLengthFrequencies(self, contentNoPunctuation):
+		self.frequencies = 11 * [0];
+		contentSplit = contentNoPunctuation.split();
+		for i in range(0, len(contentSplit)):
+			if len(contentSplit[i]) > 10:
+				self.frequencies[10] = self.frequencies[10] + 1;
+			else:
+				self.frequencies[len(contentSplit[i])-1] = self.frequencies[len(contentSplit[i])-1] + 1;
+		totalWords = 0;
+		for i in range(0, len(self.frequencies)):
+			totalWords = totalWords + self.frequencies[i];
+		for i in range(0, len(self.frequencies)):
+			self.frequencies[i] = float(self.frequencies[i]) / float(totalWords);
+		return self.frequencies;
+		
 	# create dictionary for words and their number of occurences
 	def getUniqueWords(self):
 		uniqueWords = {};
@@ -152,7 +172,7 @@ class File:
 	def getRarestWords(self, n, wordCount):
 		sortedWordCount = sorted(wordCount.items(), key = operator.itemgetter(1));
 		rarestN = [];
-		for i in range(0,n):
+		for i in range(n, 2500):
 			a,b = zip(sortedWordCount[i]);
 			str1 = re.match('\w+', ''.join(a), re.IGNORECASE);
 			if str1:
