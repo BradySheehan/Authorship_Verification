@@ -4,10 +4,9 @@ import operator
 import re
 import string
 
-# To do's:
-class Author:
-	File;
-	Features; #the features should be a vector we can input to the neural net
+# class Author:
+# 	File;
+# 	Features; #the features should be a vector we can input to the neural net
 
 
 # should we make a class of features and seperate the file itself in a class from the features
@@ -28,7 +27,7 @@ class File:
 	mostCommonFirstWord = 0;
 	rarestWords = {};
 	wordFrequency = {};
-	numWords;
+	numWords = 0;
 	
 	def __init__(self, path):
 		self.path = path;
@@ -128,8 +127,8 @@ class File:
 		content2 = re.sub('[--]', ' ', content2);
 		words = content2.split(" ");
 		for i in range(0,len(words)):
-			str = re.match('\w+.', words[i], re.IGNORECASE);
-			if str and i+1 != len(words) and words[i+1] != '':
+			str1 = re.match('\w+.', words[i], re.IGNORECASE);
+			if str1 and i+1 != len(words) and words[i+1] != '':
 				if firstWords.has_key(words[i+1]):
 					firstWords.update({words[i+1]:firstWords[words[i+1]] + 1});
 				else:
@@ -144,14 +143,16 @@ class File:
 				wordFreq.update({key:value});
 		return wordFreq;
 
-	# get n rarest words (should add check to make sure it's not a page number
-	# should we not count numbers as words? 
+	# get n rarest words
 	def getRarestWords(self, n, wordCount):
 		sortedWordCount = sorted(wordCount.items(), key = operator.itemgetter(1));
 		rarestN = [];
 		for i in range(0,n):
-			rarestN.append(sortedWordCount[i])
+			a,b = zip(sortedWordCount[i]);
+			str1 = re.match('\w+', ''.join(a), re.IGNORECASE);
+			if str1:
+				rarestN.append(sortedWordCount[i]);
 		return rarestN;
 
-file = File("AFarewellToArms.txt");
+file = File("Victorian_novels_from_PJ/Collins_50Anton.txt");
 file.printFields();
