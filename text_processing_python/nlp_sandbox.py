@@ -34,6 +34,7 @@ class File:
 		self.path = path;
 		self.content = self.getContent();
 		self.contentNoPunctuation = self.getContentNoPunctuation();
+		self.numWords = self.getNumWords();
 		self.uniqueWords = self.getUniqueWords();
 		self.mostCommonWord = self.getMostCommonWord();
 		self.biGrams = self.getNGrams(2);
@@ -49,29 +50,32 @@ class File:
 	def printFields(self):
 		# print "Content:", self.content;
 		# print "Word Count:", self.uniqueWords;
-		print "Most Common Word:", self.mostCommonWord;
+		# print "Most Common Word:", self.mostCommonWord;
 		# print "\nBi-grams:", self.biGrams;
 		# print "\nTri-grams:", self.triGrams;
 		# print "\nQuad-grams:", self.quadGrams;
-		print "\nAverage Word Length:", self.averageWordLength, " letters";
-		print "\nAverage Sentence Length: ", self.averageSentenceLength;
+		# print "\nAverage Word Length:", self.averageWordLength, " letters";
+		# print "\nAverage Sentence Length: ", self.averageSentenceLength;
 		# print "\nFILE no punctuation", self.contentNoPunctuation;
-		print "\nMost Common First Word: ", self.mostCommonFirstWord;
-		print "\nWords with frequency 50+: ", self.wordFrequency;
-		print "\nRarest Words:", self.rarestWords;
+		# print "\nMost Common First Word: ", self.mostCommonFirstWord;
+		# print "\nWords with frequency 50+: ", self.wordFrequency;
+		# print "\nRarest Words:", self.rarestWords;
 		# print "number of words:", self.numWords;
+		print self.contentNoPunctuation;
 
 	# return entire file
 	def getContent(self):
 		content = open(self.path, "r").read();
 		return content;
 
+	def getNumWords(self):
+		return len(self.contentNoPunctuation.split(" "));
 	# return average sentence length
 	def getAverageSentenceLength(self):
 		# i don't think counting words this way will work unless you do it on the no punctuation file
 		# since documents like the constitutition have weird punctuation attached to words
 		# numWords = len(self.content.split(" ")); 
-		self.numWords = len(self.contentNoPunctuation.split(" "));
+		print "num words = ", self.numWords
 		numPeriods = self.content.count(".");
 		averageSentenceLength = self.numWords/numPeriods;
 		return averageSentenceLength;
@@ -81,14 +85,14 @@ class File:
 		f = open(self.path,"r");
 		contentNoPunctuation = "";
 		for line in f:
-			contentNoPunctuation = contentNoPunctuation + re.sub('\W', ' ', line);
+			contentNoPunctuation = contentNoPunctuation + re.sub('\W', ' ', str.replace(line, '\s+', ' ')).lower();
 		return contentNoPunctuation;
 
 	# average word length of the file
 	def getAverageWordLength(self):
-		words = self.content.split(" ");
+		words = self.contentNoPunctuation.split(" ");
 		totalLength = 0;
-		for i in range(0, len(words)):
+		for i in range(0, self.numWords):
 			totalLength = totalLength + len(words[i]);
 		avgWordLength = totalLength/len(words);
 		return avgWordLength;
@@ -156,12 +160,12 @@ class File:
 		return rarestN;
 
 
-# file = File("Victorian_novels_from_PJ/Collins_50Anton.txt");
-# file.printFields();
+file = File("Victorian_novels_from_PJ/Collins_50Anton.txt");
+file.printFields();
 
-authors = ['Bronte','Collins','Dickens','Ibsen','James','Jewett','Meredith','Phillips','Shaw','Thackeray','Trollope','Wharton'];
-for name in authors:
-	print "NAME: " + name;
-	file = File("/Users/matthewsobocinski/Desktop/output/" + name + ".txt");
-	file.printFields();
-	print;
+# authors = ['Bronte','Collins','Dickens','Ibsen','James','Jewett','Meredith','Phillips','Shaw','Thackeray','Trollope','Wharton'];
+# for name in authors:
+# 	print "NAME: " + name;
+# 	file = File("/Users/matthewsobocinski/Desktop/output/" + name + ".txt");
+# 	file.printFields();
+# 	print;
