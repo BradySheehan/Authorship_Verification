@@ -4,9 +4,9 @@ import operator
 import re
 import string
 
-# class Author:
-# 	File;
-# 	Features; #the features should be a vector we can input to the neural net
+#class Author:
+#	File;
+#	Features; #the features should be a vector we can input to the neural net
 
 
 # should we make a class of features and seperate the file itself in a class from the features
@@ -28,6 +28,7 @@ class File:
 	rarestWords = {};
 	wordFrequency = {};
 	numWords = 0;
+	# numWords;
 	
 	def __init__(self, path):
 		self.path = path;
@@ -36,14 +37,14 @@ class File:
 		self.uniqueWords = self.getUniqueWords();
 		self.mostCommonWord = self.getMostCommonWord();
 		self.biGrams = self.getNGrams(2);
-		self.triGrams = self.getNGrams(3);
-		self.quadGrams = self.getNGrams(4);
-		self.averageSentenceLength = self.getAverageSentenceLength();# 
+		# self.triGrams = self.getNGrams(3);
+		# self.quadGrams = self.getNGrams(4);
+		self.averageSentenceLength = self.getAverageSentenceLength();
 		self.averageWordLength = self.getAverageWordLength();
 		self.contentNoPunctuation = self.getContentNoPunctuation();
 		self.mostCommonFirstWord = self.getMostCommonFirstWord();
 		self.wordFrequency = self.getWordsWithFrequency(50);
-		self.rarestWords = self.getRarestWords(100, self.uniqueWords); # get 20 rarest words
+		self.rarestWords = self.getRarestWords(20, self.uniqueWords); # get 20 rarest words
 
 	def printFields(self):
 		# print "Content:", self.content;
@@ -154,5 +155,13 @@ class File:
 				rarestN.append(sortedWordCount[i]);
 		return rarestN;
 
-file = File("Victorian_novels_from_PJ/Collins_50Anton.txt");
-file.printFields();
+
+# file = File("Victorian_novels_from_PJ/Collins_50Anton.txt");
+# file.printFields();
+
+authors = ['Bronte','Collins','Dickens','Ibsen','James','Jewett','Meredith','Phillips','Shaw','Thackeray','Trollope','Wharton'];
+for name in authors:
+	print "NAME: " + name;
+	file = File("/Users/matthewsobocinski/Desktop/output/" + name + ".txt");
+	file.printFields();
+	print;
