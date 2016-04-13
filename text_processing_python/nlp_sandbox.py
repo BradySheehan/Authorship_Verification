@@ -46,7 +46,7 @@ class File:
 		self.contentNoPunctuation = self.getContentNoPunctuation();
 		self.mostCommonFirstWord = self.getMostCommonFirstWord();
 		self.wordFrequency = self.getWordsWithFrequency(50);
-		self.rarestWords = self.getRarestWords(2000, self.uniqueWords); # get (n, arg) rarest words
+		self.rarestWords = self.getRarestWords(self.uniqueWords); 
 		self.frequencies = self.getWordLengthFrequencies(self.contentNoPunctuation);
 
 	def printFields(self):
@@ -61,11 +61,12 @@ class File:
 		# print "\nFILE no punctuation", self.contentNoPunctuation;
 		# print "\nMost Common First Word: ", self.mostCommonFirstWord;
 		# print "\nWords with frequency 50+: ", self.wordFrequency;
-		# print "\nRarest Words:", self.rarestWords;
-		# print "number of words:", self.numWords;
-		print self.contentNoPunctuation;
+		print "\nRarest Words:", self.rarestWords;
+		print "Number of Words:", self.numWords;
+		# print self.contentNoPunctuation;
 		print "Word Length Frequencies:", self.frequencies;
-		print self.contentNoPunctuation;
+		# print self.contentNoPunctuation;
+		# self.toBinary("Hello there");
 
 	# return entire file
 	def getContent(self):
@@ -167,25 +168,35 @@ class File:
 			if value >= frequency:
 				wordFreq.update({key:value});
 		return wordFreq;
+		
+	# generic function for converting a string its binary representation
+	# don't know if we want to do that or the type of conversion we did for Simon
+	def toBinary(self, word):
+		converted = ' '.join(format(ord(letter), 'b') for letter in word);
+		print converted;
 
-	# get n rarest words
-	def getRarestWords(self, n, wordCount):
+	# get all the words in this file that occur between 15 and 25 times
+	def getRarestWords(self, wordCount):
 		sortedWordCount = sorted(wordCount.items(), key = operator.itemgetter(1));
 		rarestN = [];
-		for i in range(n, 2500):
-			a,b = zip(sortedWordCount[i]);
-			str1 = re.match('\w+', ''.join(a), re.IGNORECASE);
-			if str1:
-				rarestN.append(sortedWordCount[i]);
+		# for i in range(n, n + 500):
+			# a,b = zip(sortedWordCount[i]);
+			# str1 = re.match('\w+', ''.join(a), re.IGNORECASE);
+			# if str1:
+				# rarestN.append(sortedWordCount[i]);
+				
+		for i in wordCount:
+			if wordCount[i] >= 15 and wordCount[i] <= 25:
+				rarestN.append(i);
 		return rarestN;
 
 
-file = File("Victorian_novels_from_PJ/Collins_50Anton.txt");
-file.printFields();
+# file = File("Victorian_novels_from_PJ/Collins_50Anton.txt");
+# file.printFields();
 
 # authors = ['Bronte','Collins','Dickens','Ibsen','James','Jewett','Meredith','Phillips','Shaw','Thackeray','Trollope','Wharton'];
 # for name in authors:
-# 	print "NAME: " + name;
-# 	file = File("/Users/matthewsobocinski/Desktop/output/" + name + ".txt");
-# 	file.printFields();
-# 	print;
+ 	# print "NAME: " + name;
+ 	# file = File("/Users/matthewsobocinski/Desktop/output/" + name + ".txt");
+ 	# file.printFields();
+ 	# print;
