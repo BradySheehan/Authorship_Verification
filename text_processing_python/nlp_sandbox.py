@@ -8,7 +8,9 @@ import string
 # TODO
 	# determine which of the features are useful
 	# do something with the n-grams
-	# determine how to convert non-numeric values
+	# determine how to convert non-numeric values to numeric/binary input
+	# extract stop words from the texts
+	# create multiple test sets for each pair of authors
 
 class Author:
 	def __init__(self, name, file):
