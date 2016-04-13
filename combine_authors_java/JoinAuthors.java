@@ -5,7 +5,7 @@ class JoinAuthors {
 	public static HashMap<String, ArrayList<File>> authors = new HashMap<String, ArrayList<File>>();
 	
 	public static void main(String[] args) throws IOException {
-		final File folder = new File("novels");
+		final File folder = new File("../Victorian_novels_from_PJ");
 		listFilesForFolder(folder);
 		combineFiles();
 	}
@@ -29,11 +29,11 @@ class JoinAuthors {
 	
 	public static void combineFiles() throws IOException {
 		for(String lastName : authors.keySet()) {
-			BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/matthewsobocinski/Desktop/output/" + lastName + ".txt"));
+			BufferedWriter bw = new BufferedWriter(new FileWriter("../output/" + lastName + ".txt"));
 			try {
 				String line = null;
 				for (File file : authors.get(lastName)) {
-					BufferedReader br = new BufferedReader(new FileReader("/Users/matthewsobocinski/Desktop/novels/" + file.getName()));
+					BufferedReader br = new BufferedReader(new FileReader("../Victorian_novels_from_PJ/" + file.getName()));
 					while ((line = br.readLine()) != null) {
 						bw.write(line + "\n");
 					}
