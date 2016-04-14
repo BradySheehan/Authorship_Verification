@@ -34,6 +34,9 @@ class Author:
 		features.append(file.averageSentenceLength);
 		for i in range(0, len(file.frequencies)):
 			features.append(file.frequencies[i]);
+		for i in range(0, len(file.wordBiGrams)):
+			features.append(file.wordBiGrams[i]); # need a way to quantify these (already a TODO item)
+			
 		# for i in range(0, len(file.rarestWords)):
 			# features.append(self.toBinary(file.rarestWords[i]));
 		return features;
@@ -60,6 +63,7 @@ class File:
 	content = "";
 	averageWordLength = 0;
 	contentNoPunctuation = "";
+	wordBiGrams = [];
 	mostCommonFirstWord = 0;
 	rarestWords = {};
 	wordFrequency = {};
@@ -80,6 +84,7 @@ class File:
 		self.averageSentenceLength = self.getAverageSentenceLength();
 		self.averageWordLength = self.getAverageWordLength();
 		self.contentNoPunctuation = self.getContentNoPunctuation();
+		self.wordBiGrams = self.word_grams(self.contentNoPunctuation);
 		self.mostCommonFirstWord = self.getMostCommonFirstWord();
 		self.wordFrequency = self.getWordsWithFrequency(50);
 		self.rarestWords = self.getRarestWords(self.uniqueWords); 
@@ -93,13 +98,14 @@ class File:
 		# print "\nTri-grams:", self.triGrams;
 		# print "\nQuad-grams:", self.quadGrams;
 		# print "\nAverage Word Length:", self.averageWordLength, " letters";
-		print "\nAverage Sentence Length: ", self.averageSentenceLength;
+		# print "\nAverage Sentence Length: ", self.averageSentenceLength;
 		# print "\nFILE no punctuation", self.contentNoPunctuation;
 		# print "\nMost Common First Word: ", self.mostCommonFirstWord;
 		# print "\nWords with frequency 50+: ", self.wordFrequency;
-		print "\nRarest Words:", self.rarestWords;
+		# print "\nRarest Words:", self.rarestWords;
 		# print self.contentNoPunctuation;
-		print "Word Length Frequencies:", self.frequencies;
+		print "\nWord Length Frequencies:", self.frequencies;
+		print "\nTop Twenty Bigrams:", self.wordBiGrams, "\n";
 		# print self.contentNoPunctuation;
 		# self.toBinary("Hello there");
 
@@ -216,6 +222,26 @@ class File:
 			if wordCount[i] >= 15 and wordCount[i] <= 25:
 				rarestN.append(i);
 		return rarestN;
+		
+	# get bigrams of words, then return the most commmon 20 by this author (should be better when stop words are removed)
+	def word_grams(self, text):
+		text_split = [];
+		top_twenty = [];
+		word_ngrams = {};
+		text_split = text.split(); # splitting like this removes extra white space
+		# print text_split;
+		for i in range(0, len(text_split)-1):
+			gram = text_split[i] + " " + text_split[i+1];
+			if gram in word_ngrams:
+				word_ngrams[gram] = word_ngrams[gram] + 1;
+			else:
+				word_ngrams[gram] = 1;
+		sortedResult = sorted(word_ngrams.items(), key = operator.itemgetter(1));
+		# print sortedResult[len(sortedResult)-1][0];
+		begin = len(sortedResult) - 20;
+		for i in range(begin, len(sortedResult)):
+			top_twenty.append(sortedResult[i][0]);
+		return top_twenty;
 
 
 # file = File("Victorian_novels_from_PJ/Collins_50Anton.txt");
@@ -224,7 +250,7 @@ class File:
 authors = ['Bronte','Collins','Dickens','Ibsen','James','Jewett','Meredith','Phillips','Shaw','Thackeray','Trollope','Wharton'];
 for name in authors:
 	print "NAME: " + name;
-	file = File("/Users/matthewsobocinski/Desktop/Folders/AI/Project/output/" + name + ".txt");
-	# file.printFields();
+	file = File("../output/" + name + ".txt");
+	file.printFields();
 	author = Author(name, file);
 	print;
