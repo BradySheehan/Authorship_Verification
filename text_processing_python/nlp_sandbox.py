@@ -12,6 +12,8 @@ import string
 	# extract stop words from the texts
 	# create multiple test sets for each pair of authors
 
+
+
 class Author:
 	def __init__(self, name, file):
 		self.name = name;
