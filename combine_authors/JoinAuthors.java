@@ -29,7 +29,7 @@ class JoinAuthors {
 	
 	public static void combineFiles() throws IOException {
 		for(String lastName : authors.keySet()) {
-			BufferedWriter bw = new BufferedWriter(new FileWriter("/Users/matthewsobocinski/Desktop/output/" + lastName + ".txt"));
+			BufferedWriter bw = new BufferedWriter(new FileWriter("../output/" + lastName + ".txt"));
 			try {
 				String line = null;
 				for (File file : authors.get(lastName)) {
