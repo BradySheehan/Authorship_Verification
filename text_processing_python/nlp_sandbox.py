@@ -70,7 +70,6 @@ class File:
 	wordFrequency = {};
 	numWords = 0;
 	frequencies = [];
-	# numWords;
 	stopwords = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours',
 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers',
 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves',
@@ -91,20 +90,19 @@ class File:
 		self.numWords = self.getNumWords();
 		self.uniqueWords = self.getUniqueWords();
 		self.mostCommonWord = self.getMostCommonWord();
-		# self.biGrams = self.getNGrams(2);
-		# self.triGrams = self.getNGrams(3);
-		# self.quadGrams = self.getNGrams(4);
 		self.averageSentenceLength = self.getAverageSentenceLength();
 		self.averageWordLength = self.getAverageWordLength();
-		self.contentNoPunctuation = self.getContentNoPunctuation();
-		self.wordBiGrams = self.word_grams(self.contentNoPunctuation);
 		self.mostCommonFirstWord = self.getMostCommonFirstWord();
 		self.wordFrequency = self.getWordsWithFrequency(50);
 		self.rarestWords = self.getRarestWords(self.uniqueWords); 
-		self.frequencies = self.getWordLengthFrequencies(self.contentNoPunctuation);
 		self.contentNoStopwords = self.getContentNoStopwords();
+		self.wordBiGrams = self.word_grams(self.contentNoStopwords);
+		self.frequencies = self.getWordLengthFrequencies(self.contentNoPunctuation);
+		# self.biGrams = self.getNGrams(2);
+		# self.triGrams = self.getNGrams(3);
+		# self.quadGrams = self.getNGrams(4);
 
-	def printFields(self):
+	# def printFields(self):
 		# print "Content:", self.content;
 		# print "Word Count:", self.uniqueWords;
 		# print "Most Common Word:", self.mostCommonWord;
@@ -113,7 +111,7 @@ class File:
 		# print "\nQuad-grams:", self.quadGrams;
 		# print "\nAverage Word Length:", self.averageWordLength, " letters";
 		# print "\nAverage Sentence Length: ", self.averageSentenceLength;
-		print "\nFILE no punctuation and no stop words", self.contentNoStopwords;
+		# print "\nFILE no punctuation and no stop words", self.contentNoStopwords;
 		# print "\nMost Common First Word: ", self.mostCommonFirstWord;
 		# print "\nWords with frequency 50+: ", self.wordFrequency;
 		# print "\nRarest Words:", self.rarestWords;
@@ -124,6 +122,7 @@ class File:
 		# self.toBinary("Hello there");
 		# print self.contentNoStopwords;
 	# return file
+	
 	def getContent(self):
 		original = open(self.path, "r").read();
 		return original;
@@ -211,6 +210,7 @@ class File:
 			j = j + 1;
 		return nGrams;
 
+	# returns the single most 
 	def getMostCommonFirstWord(self):
 		firstWords = {};
 		content2 = re.sub('[\n]', ' ', self.content, flags = re.MULTILINE);
@@ -251,32 +251,28 @@ class File:
 		
 	# get bigrams of words, then return the most commmon 20 by this author (should be better when stop words are removed)
 	def word_grams(self, text):
-		text_split = [];
 		top_twenty = [];
 		word_ngrams = {};
-		text_split = text.split(); # splitting like this removes extra white space
-		# print text_split;
-		for i in range(0, len(text_split)-1):
-			gram = text_split[i] + " " + text_split[i+1];
+		for i in range(0, len(text)-1):
+			gram = text[i] + " " + text[i+1];
 			if gram in word_ngrams:
 				word_ngrams[gram] = word_ngrams[gram] + 1;
 			else:
 				word_ngrams[gram] = 1;
 		sortedResult = sorted(word_ngrams.items(), key = operator.itemgetter(1));
-		# print sortedResult[len(sortedResult)-1][0];
 		begin = len(sortedResult) - 20;
 		for i in range(begin, len(sortedResult)):
 			top_twenty.append(sortedResult[i][0]);
 		return top_twenty;
 
 
-file = File("training/output/Bronte.txt");
-file.printFields();
+#file = File("training/output/Bronte.txt");
+#file.printFields();
 
-# authors = ['Bronte','Collins','Dickens','Ibsen','James','Jewett','Meredith','Phillips','Shaw','Thackeray','Trollope','Wharton'];
-# for name in authors:
-# 	print "NAME: " + name;
-# 	file = File("training/output/" + name + ".txt");
-# 	file.printFields();
-# 	author = Author(name, file);
-# 	print;
+authors = ['Bronte','Collins','Dickens','Ibsen','James','Jewett','Meredith','Phillips','Shaw','Thackeray','Trollope','Wharton'];
+for name in authors:
+	print "NAME: " + name;
+	file = File("../output/" + name + ".txt");
+	# file.printFields();
+ 	author = Author(name, file);
+ 	print;
