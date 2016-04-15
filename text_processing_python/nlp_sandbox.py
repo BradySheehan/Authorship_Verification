@@ -61,6 +61,7 @@ class File:
 	triGrams = [];
 	quadGrams = [];
 	content = "";
+	contentNoStopwords = [];
 	averageWordLength = 0;
 	contentNoPunctuation = "";
 	wordBiGrams = [];
@@ -70,7 +71,19 @@ class File:
 	numWords = 0;
 	frequencies = [];
 	# numWords;
-	
+	stopwords = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours',
+'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers',
+'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves',
+'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is', 'are',
+'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does',
+'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until',
+'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into',
+'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down',
+'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here',
+'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more',
+'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so',
+'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', 'should', 'now'];
+
 	def __init__(self, path):
 		self.path = path;
 		self.content = self.getContent();
@@ -89,6 +102,7 @@ class File:
 		self.wordFrequency = self.getWordsWithFrequency(50);
 		self.rarestWords = self.getRarestWords(self.uniqueWords); 
 		self.frequencies = self.getWordLengthFrequencies(self.contentNoPunctuation);
+		self.contentNoStopwords = self.getContentNoStopwords();
 
 	def printFields(self):
 		# print "Content:", self.content;
@@ -99,23 +113,25 @@ class File:
 		# print "\nQuad-grams:", self.quadGrams;
 		# print "\nAverage Word Length:", self.averageWordLength, " letters";
 		# print "\nAverage Sentence Length: ", self.averageSentenceLength;
-		# print "\nFILE no punctuation", self.contentNoPunctuation;
+		print "\nFILE no punctuation and no stop words", self.contentNoStopwords;
 		# print "\nMost Common First Word: ", self.mostCommonFirstWord;
 		# print "\nWords with frequency 50+: ", self.wordFrequency;
 		# print "\nRarest Words:", self.rarestWords;
 		# print self.contentNoPunctuation;
-		print "\nWord Length Frequencies:", self.frequencies;
-		print "\nTop Twenty Bigrams:", self.wordBiGrams, "\n";
+		# print "\nWord Length Frequencies:", self.frequencies;
+		# print "\nTop Twenty Bigrams:", self.wordBiGrams, "\n";
 		# print self.contentNoPunctuation;
 		# self.toBinary("Hello there");
-
-	# return entire file
+		# print self.contentNoStopwords;
+	# return file
 	def getContent(self):
-		content = open(self.path, "r").read();
-		return content;
+		original = open(self.path, "r").read();
+		return original;
+
 
 	def getNumWords(self):
 		return len(self.contentNoPunctuation.split(" "));
+
 	# return average sentence length
 	def getAverageSentenceLength(self):
 		# i don't think counting words this way will work unless you do it on the no punctuation file
@@ -133,6 +149,16 @@ class File:
 		for line in f:
 			contentNoPunctuation = contentNoPunctuation + re.sub('\W', ' ', str.replace(line, '\s+', ' ')).lower();
 		return contentNoPunctuation;
+
+
+	# return file without stop words
+	def getContentNoStopwords(self):
+		content = [];
+		words = self.contentNoPunctuation.split(" ");
+		for word in words:
+			if word not in self.stopwords and word != '' and word != ' ':
+				content.append(word);
+		return content;
 
 	# average word length of the entire file
 	def getAverageWordLength(self):
@@ -244,13 +270,13 @@ class File:
 		return top_twenty;
 
 
-# file = File("Victorian_novels_from_PJ/Collins_50Anton.txt");
-# file.printFields();
+file = File("training/output/Bronte.txt");
+file.printFields();
 
-authors = ['Bronte','Collins','Dickens','Ibsen','James','Jewett','Meredith','Phillips','Shaw','Thackeray','Trollope','Wharton'];
-for name in authors:
-	print "NAME: " + name;
-	file = File("../output/" + name + ".txt");
-	file.printFields();
-	author = Author(name, file);
-	print;
+# authors = ['Bronte','Collins','Dickens','Ibsen','James','Jewett','Meredith','Phillips','Shaw','Thackeray','Trollope','Wharton'];
+# for name in authors:
+# 	print "NAME: " + name;
+# 	file = File("training/output/" + name + ".txt");
+# 	file.printFields();
+# 	author = Author(name, file);
+# 	print;
