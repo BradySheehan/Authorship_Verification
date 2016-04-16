@@ -41,6 +41,9 @@ class Features:
 	# (the sum of all the word lengths divided by the total number of words)
 	# COULD CHOOSE TO IGNORE OR NOT IGNORE STOP WORDS
 	def getAvgWordLength(self):
+		# counts = [len(x) for x in self.work.split()];
+		# return float(sum(counts))/len(counts);
+		# ^^^ 2 line solution I haven't tested
 		words = self.split(" ");
 		wordLengthsTotal = 0;
 		for i in range(0, len(words)):
@@ -141,3 +144,4 @@ a.printAuthorsAndWorks();
 
 
 
+#=
