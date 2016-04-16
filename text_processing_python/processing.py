@@ -4,10 +4,11 @@ import operator
 import re
 import string
 
+# note that the author class returns the works as a string and not as a list
 class Author:
 	def __init__(self, name):
 		self.name = name;
-		self.works = [];
+		self.works = []; #strings referencing the work
 
 	def getNoStopWords(self, work):
 		return "";
@@ -15,23 +16,41 @@ class Author:
 	def getNoPunctuation(self, work):
 		return "";
 
+	# get the work as a string with normalized white space
+	def getWork(self, workIndex):
+		original = ''.join(open(self.works[workIndex], "r").read().split());
+		return original;
+
+
+# CURRENTLY THE FEATURES ARE ONLY WORKING WITH THE ORIGINAL WORK
+# but it would be easy to change self.work to the file as a string
+# with whatever characteristics we want
 class Features:
-	def __init__(self, work, authorIndex):
-		self.work = work;
-		self.authorIndex = authorIndex;
-		self.avgWordLength = self.getAvgWordLength();
-		self.avgSenLength = self.getAvgSenLength();
-		self.wordLengthPercentages = self.getWordLengthPercentages();
-		self.senLengthPercentages = self.getSenLengthPercentages();
-		self.featureVector = self.getFeatureVector();
+	def __init__(self, author, workIndex):
+		self.author = author;
+		self.workIndex = workIndex;
+		self.wordCount = self.getWordCount();
+		self.work = author.getWork(workIndex);
+		# self.avgWordLength = self.getAvgWordLength();
+		# self.avgSenLength = self.getAvgSenLength();
+		# self.wordLengthPercentages = self.getWordLengthPercentages();
+		# self.senLengthPercentages = self.getSenLengthPercentages();
+		# self.featureVector = self.getFeatureVector();
 
 	# get the average word length of this work
+	# (the sum of all the word lengths divided by the total number of words)
+	# COULD CHOOSE TO IGNORE OR NOT IGNORE STOP WORDS
 	def getAvgWordLength(self):
-		return 0.0;
+		words = self.split(" ");
+		wordLengthsTotal = 0;
+		for i in range(0, len(words)):
+			wordLengthsTotal = wordLengthsTotal + len(words[i]);
+		return float(wordLengthsTotal)/self.wordCount;
 
-	# calculate the average sentence length of this wrk
+	# calculate the average number of words per sentence
 	def getAvgSenLength(self):
-		return 0.0;
+		numSentences = len(re.findAll(r'[!.?]', self.work));
+		return self.wordCount/numSentences;
 
 	# create a vector of percentage for each word length 'n' in [0-10,11+]
 	def getWordLengthPercentages(self):
@@ -40,6 +59,10 @@ class Features:
 	# create a vector of sentence length percentages for each sentence length in [?]
 	def getSenLengthPercentages(self):
 		return 0.0;
+
+	def getWordCount(self):
+		wordCount = len(re.findAll(r'\w+', self.work));
+		return wordCount;
 
 	# concatenate all of the above features into a numerical vector
 	# this will need to be changes because the last two fields will be vectors
@@ -51,7 +74,7 @@ class Features:
 		vector.append(self.senLengthPercentages);
 		return vector;
 
-# Class creates objects for each author
+# Class creates objects for each author in the directory structure
 class Corpus:
 	def __init__(self):
 		self.authors = [];
@@ -113,8 +136,8 @@ a.printAuthorsAndWorks();
 # 		for feature in range(0, len(vector)):
 # 			print vector[feature];
 # 		print;
-#
-#
-#
-#
-#
+
+
+
+
+
