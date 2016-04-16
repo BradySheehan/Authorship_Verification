@@ -23,7 +23,7 @@ class Features:
 		self.avgSenLength = self.getAvgSenLength();
 		self.wordLengthPercentages = self.getWordLengthPercentages();
 		self.senLengthPercentages = self.getSenLengthPercentages();
-		self.featureVector = self.createFeatureVector();
+		self.featureVector = self.getFeatureVector();
 
 	# get the average word length of this work
 	def getAvgWordLength(self):
@@ -43,7 +43,7 @@ class Features:
 
 	# concatenate all of the above features into a numerical vector
 	# this will need to be changes because the last two fields will be vectors
-	def createFeatureVector(self):
+	def getFeatureVector(self):
 		vector = [];
 		vector.append(self.avgWordLength);
 		vector.append(self.avgSenLength);
@@ -51,14 +51,14 @@ class Features:
 		vector.append(self.senLengthPercentages);
 		return vector;
 
-# Class will generate input and output files for the neural network
-#
-class InputPairs:
+# Class creates objects for each author
+class Corpus:
 	def __init__(self):
 		self.authors = [];
 		# names = ['Bronte','Collins','Dickens','Ibsen','James','Jewett','Meredith','Phillips','Shaw','Thackeray','Trollope','Wharton'];
-		self.names = ['A','B']; # temp for now
-		self.authornames = "";
+		# self.names = ['A','B']; # temp for now
+		self.authornames = [];
+		self.initializeAuthors();
 
 	def initializeAuthors(self):
 		self.authornames = os.listdir("../authors/");
@@ -71,7 +71,21 @@ class InputPairs:
 		for author in self.authors:
 			print "Author: " + author.name;
 			for i in range(0, len(author.works)):
-				print "work " + str(i) + ":\t" + author.works[i];
+				print "\tWork " + str(i) + ":\t" + author.works[i];
+
+# Each input pair is two sets of vectors (of vectors) that define the input that will
+# be given to the neural network
+# 
+class InputPair:
+	def __init__(self, author1, work1, author2, work2):
+		self.author1 = author1;
+		self.author2 = author2;
+		self.work1 = work1;
+		self.work2 = work2;
+
+a = Corpus();
+a.printAuthorsAndWorks();
+
 
 # # create an Author object for each author
 # for name in range(0, len(names)):
@@ -88,10 +102,6 @@ class InputPairs:
 # 		for feature in range(0, len(vector)):
 # 			print vector[feature];
 # 		print;
-
-a = InputPairs();
-a.initializeAuthors();
-a.printAuthorsAndWorks();
 
 
 
