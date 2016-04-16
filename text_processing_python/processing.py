@@ -73,19 +73,30 @@ class Corpus:
 			for i in range(0, len(author.works)):
 				print "\tWork " + str(i) + ":\t" + author.works[i];
 
-# Each input pair is two sets of vectors (of vectors) that define the input that will
-# be given to the neural network
-# 
+# Each input pair is two sets of vectors (possibly a vector of vectors)
+# that define one input that will be given to the neural network
 class InputPair:
-	def __init__(self, author1, work1, author2, work2):
-		self.author1 = author1;
-		self.author2 = author2;
+	def __init__(self, work1, authorIndex1, work2, authorIndex2):
+		self.author1 = authorIndex1;
+		self.author2 = authorIndex2;
 		self.work1 = work1;
 		self.work2 = work2;
+		self.feature1;
+		self.feature2;
+		self.initializeFeatureVectors();
+
+	def initializeFeatureVectors():
+		self.feature1 = Features(self.work1, self.author1);
+		self.feature2 = Features(self.work2, self.author2);
+
+	def printFeatureVectors():
+		print "Author1: " + self.author1.name;
+		print "\tFeatures: " + self.feature1;
+		print "\nAuthor2: " + self.author2.name;
+		print "\tFeatures: " + self.feature1;
 
 a = Corpus();
 a.printAuthorsAndWorks();
-
 
 # # create an Author object for each author
 # for name in range(0, len(names)):
@@ -102,7 +113,8 @@ a.printAuthorsAndWorks();
 # 		for feature in range(0, len(vector)):
 # 			print vector[feature];
 # 		print;
-
-
-
-
+#
+#
+#
+#
+#
