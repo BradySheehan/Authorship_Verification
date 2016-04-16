@@ -91,11 +91,11 @@ class File:
 		self.uniqueWords = self.getUniqueWords();
 		self.mostCommonWord = self.getMostCommonWord();
 		self.averageSentenceLength = self.getAverageSentenceLength();
-		self.averageWordLength = self.getAverageWordLength();
 		self.mostCommonFirstWord = self.getMostCommonFirstWord();
 		self.wordFrequency = self.getWordsWithFrequency(50);
 		self.rarestWords = self.getRarestWords(self.uniqueWords); 
 		self.contentNoStopwords = self.getContentNoStopwords();
+		self.averageWordLength = self.getAverageWordLength();
 		self.wordBiGrams = self.word_grams(self.contentNoStopwords);
 		self.frequencies = self.getWordLengthFrequencies(self.contentNoPunctuation);
 		# self.biGrams = self.getNGrams(2);
@@ -124,7 +124,7 @@ class File:
 	# return file
 	
 	def getContent(self):
-		original = open(self.path, "r").read();
+		original = ''.join(open(self.path, "r").read().split());
 		return original;
 
 
@@ -138,12 +138,12 @@ class File:
 		# numWords = len(self.content.split(" ")); 
 		# print "Number of Words =", self.numWords;
 		numPeriods = self.content.count(".");
-		averageSentenceLength = self.numWords/numPeriods;
+		averageSentenceLength = float(self.numWords)/numPeriods;
 		return averageSentenceLength;
 
 	# return entire file without the punctuation
 	def getContentNoPunctuation(self):
-		f = open(self.path,"r");
+		f = self.content;
 		contentNoPunctuation = "";
 		for line in f:
 			contentNoPunctuation = contentNoPunctuation + re.sub('\W', ' ', str.replace(line, '\s+', ' ')).lower();
@@ -161,11 +161,11 @@ class File:
 
 	# average word length of the entire file
 	def getAverageWordLength(self):
-		words = self.contentNoPunctuation.split(" ");
+		words = self.contentNoStopwords;
 		totalLength = 0;
-		for i in range(0, self.numWords):
+		for i in range(0, len(words)):
 			totalLength = totalLength + len(words[i]);
-		avgWordLength = totalLength/len(words);
+		avgWordLength = float(totalLength)/len(words);
 		return avgWordLength;
 			
 	# frequencies of word lengths over entire document (percentage of 1-length words is stored at [0])
@@ -269,10 +269,36 @@ class File:
 #file = File("training/output/Bronte.txt");
 #file.printFields();
 
+# print os.listdir("../Victorian_novels_from_PJ");
+
 authors = ['Bronte','Collins','Dickens','Ibsen','James','Jewett','Meredith','Phillips','Shaw','Thackeray','Trollope','Wharton'];
+print "COMBINED TRAINING:";
+print "------------------------------------";
 for name in authors:
-	print "NAME: " + name;
+	print "NAME:", name;
 	file = File("../output/" + name + ".txt");
 	# file.printFields();
  	author = Author(name, file);
- 	print;
+	print;
+print "\n\n";
+
+print "INDIVIDUAL TRAINING:";
+print "------------------------------------";
+for name in os.listdir("../Victorian_novels_from_PJ"):
+	if(name != ".DS_Store"):
+		print "NAME:", name;
+		newFile = File("../Victorian_novels_from_PJ/" + name);
+		# newFile.printFields();
+		author = Author(name, newFile);
+		print;
+print "\n\n";
+
+print "TESTING NOVELS:";
+print "------------------------------------";
+for name in os.listdir("../testing_novels"):
+	print "NAME:", name;
+	newFile = File("../testing_novels/" + name);
+	# newFile.printFields();
+	author = Author(name, newFile);
+	print;
+print "\n\n";
