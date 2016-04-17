@@ -89,17 +89,25 @@ class Corpus:
 		self.initializeAuthors();
 
 	def initializeAuthors(self):
-		self.authornames = os.listdir("../authors/");
+		self.authornames = self.getAllFiles("authors/");
 		for name in self.authornames:
 			a = Author(name);
-			a.works = os.listdir("../authors/"+name);
+			a.works = self.getAllFiles("authors/"+name);
 			self.authors.append(a);
+
+	#returns files/folders in directory without system files
+	def getAllFiles(self, pathName):
+		directory = [];
+		for item in os.listdir(pathName):
+			if not item.startswith('.'):
+				directory.append(item);
+		return directory;
 
 	def printAuthorsAndWorks(self):
 		for author in self.authors:
 			print "Author: " + author.name;
 			for i in range(0, len(author.works)):
-				print "\tWork " + str(i) + ":\t" + author.works[i];
+				print "\tWork " + str(i) + ":  " + author.works[i];
 
 # Each input pair is two sets of vectors (possibly a vector of vectors)
 # that define one input that will be given to the neural network
