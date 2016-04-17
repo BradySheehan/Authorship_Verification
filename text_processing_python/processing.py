@@ -4,6 +4,7 @@ import operator
 import re
 import string
 
+#This code was written and tested with version 2.7.* of Python
 # Class creates objects for each author in the directory structure
 class Corpus:
 	def __init__(self):
@@ -34,6 +35,10 @@ class Corpus:
 			for i in range(0, len(author.works)):
 				print "\tWork " + str(i) + ":  " + author.works[i];
 
+	def generateInputPairs(self):
+
+		return "";
+
 # note that the author class returns the works as a string and not as a list
 class Author:
 	def __init__(self, name):
@@ -61,7 +66,7 @@ class Features:
 		self.author = author;
 		self.workIndex = workIndex;
 		self.work = self.author.getWork(workIndex);
-		self.wordCount = self.getWordCount();
+		self.wordCount = self.getWordCount(self.work);
 		self.sentenceCount = self.getSentenceCount();
 		# self.avgWordLength = self.getAvgWordLength();
 		# self.avgSenLength = self.getAvgSenLength();
@@ -110,12 +115,15 @@ class Features:
 		return self.frequencies;
 
 
-	# create a vector of sentence length percentages for each sentence length in [?]
+	# create a vector of sentence length percentages for each sentence length in 0-30, 30+
 	def getSenLengthPercentages(self):
+		content = self.work.split(r'[!.?]');
+		for sen in content:
+
 		return 0.0;
 
-	def getWordCount(self):
-		return len(re.findall(r'\w+|\w+\-\w+|\w+\'\w+', self.work));
+	def getWordCount(self, line):
+		return len(re.findall(r"\w+(?:-\w+)+|\w+", line));
 
 	# concatenate all of the above features into a numerical vector
 	# this will need to be changes because the last two fields will be vectors
@@ -163,22 +171,8 @@ class InputPair:
 
 if __name__ == '__main__':
 	a = Corpus();
-	a.printAuthorsAndWorks();
-
 	inputPair = InputPair(a.authors[1], 1, a.authors[2], 1);
 	inputPair.printPairs();
-	# print inputPair.feature1.work;
-	# print "Author: " + inputPair.author1.name + ", Work: " + inputPair.author1.works[1];
-	# print "word count: " + str(inputPair.feature1.wordCount);
-	# print "sentence count: " + str(inputPair.feature1.sentenceCount);
-	# print "Average sent length: " + str(inputPair.feature1.getAvgSenLength());
-	# print "word length percentages: " + str(inputPair.feature1.getWordLengthPercentages());
-
-	# print inputPair.author2.works[1];
-	# print "word count: " + str(inputPair.feature2.wordCount);
-	# print "sentence count: " + str(inputPair.feature2.sentenceCount);
-	# print "Average sent length: " + str(inputPair.feature2.getAvgSenLength());
-	# print "word length percentages: " + str(inputPair.feature1.getWordLengthPercentages());
 
 
 # # create an Author object for each author
@@ -196,9 +190,6 @@ if __name__ == '__main__':
 # 		for feature in range(0, len(vector)):
 # 			print vector[feature];
 # 		print;
-
-
-
 
 
 #=
