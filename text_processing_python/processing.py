@@ -121,8 +121,9 @@ class InputPair:
 		print "\nAuthor2: " + self.author2.name;
 		print "\tFeatures: " + self.feature1;
 
-a = Corpus();
-a.printAuthorsAndWorks();
+if __name__ == '__main__':
+	a = Corpus();
+	a.printAuthorsAndWorks();
 
 # # create an Author object for each author
 # for name in range(0, len(names)):
