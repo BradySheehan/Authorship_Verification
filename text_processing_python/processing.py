@@ -59,8 +59,25 @@ class Features:
 		return float(self.wordCount)/self.sentenceCount;
 
 	# create a vector of percentage for each word length 'n' in [0-10,11+]
+		numSentences = len(re.findAll(r'[!.?]', self.work));
+		return float(self.wordCount)/numSentences;
+		
+	# create a vector of percentages for each word length 'n' in [0-10,11+]
 	def getWordLengthPercentages(self):
-		return 0.0;
+		self.frequencies = 11 * [0];
+		contentSplit = self.work.split();
+		for i in range(0, len(contentSplit)):
+			if len(contentSplit[i]) > 10:
+				self.frequencies[10] = self.frequencies[10] + 1;
+			else:
+				self.frequencies[len(contentSplit[i])-1] = self.frequencies[len(contentSplit[i])-1] + 1;
+		totalWords = 0;
+		for i in range(0, len(self.frequencies)):
+			totalWords = totalWords + self.frequencies[i];
+		for i in range(0, len(self.frequencies)):
+			self.frequencies[i] = float(self.frequencies[i]) / float(totalWords);
+		return self.frequencies;
+			
 
 	# create a vector of sentence length percentages for each sentence length in [?]
 	def getSenLengthPercentages(self):
