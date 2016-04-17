@@ -10,10 +10,10 @@ class Author:
 		self.name = name;
 		self.works = []; #strings referencing the work
 
-	def getNoStopWords(self, work):
+	def getNoStopWords(self, workIndex):
 		return "";
 
-	def getNoPunctuation(self, work):
+	def getNoPunctuation(self, workIndex):
 		return "";
 
 	# get the work as a string with normalized white space
@@ -31,11 +31,15 @@ class Features:
 		self.workIndex = workIndex;
 		self.wordCount = self.getWordCount();
 		self.work = author.getWork(workIndex);
+		self.sentenceCount = self.getSentenceCount();
 		# self.avgWordLength = self.getAvgWordLength();
 		# self.avgSenLength = self.getAvgSenLength();
 		# self.wordLengthPercentages = self.getWordLengthPercentages();
 		# self.senLengthPercentages = self.getSenLengthPercentages();
 		# self.featureVector = self.getFeatureVector();
+
+	def getSentenceCount(self):
+		return len(re.findAll(r'[!.?]', self.work));
 
 	# get the average word length of this work
 	# (the sum of all the word lengths divided by the total number of words)
@@ -52,8 +56,7 @@ class Features:
 
 	# calculate the average number of words per sentence
 	def getAvgSenLength(self):
-		numSentences = len(re.findAll(r'[!.?]', self.work));
-		return float(self.wordCount)/numSentences;
+		return float(self.wordCount)/self.sentenceCount;
 
 	# create a vector of percentage for each word length 'n' in [0-10,11+]
 	def getWordLengthPercentages(self):
@@ -64,8 +67,7 @@ class Features:
 		return 0.0;
 
 	def getWordCount(self):
-		wordCount = len(re.findAll(r'\w+', self.work));
-		return wordCount;
+		return len(re.findAll(r'\w+|\w+\-\w+|\w+\'\w+', self.work));
 
 	# concatenate all of the above features into a numerical vector
 	# this will need to be changes because the last two fields will be vectors
