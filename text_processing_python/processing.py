@@ -53,7 +53,7 @@ class Features:
 	# calculate the average number of words per sentence
 	def getAvgSenLength(self):
 		numSentences = len(re.findAll(r'[!.?]', self.work));
-		return self.wordCount/numSentences;
+		return float(self.wordCount)/numSentences;
 
 	# create a vector of percentage for each word length 'n' in [0-10,11+]
 	def getWordLengthPercentages(self):
