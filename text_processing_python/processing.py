@@ -4,8 +4,10 @@ import operator
 import re
 import string
 
-#This code was written and tested with version 2.7.* of Python
-# Class creates objects for each author in the directory structure
+#This code was written and tested with version 2.7.* of Python by Brady Sheehan
+#and Matthew Sobocinski.
+
+#Class creates objects for each author in the directory structure
 class Corpus:
 	def __init__(self):
 		self.authors = [];
@@ -37,6 +39,7 @@ class Corpus:
 		#take the cartesian product of all of the works by an author with every other
 		#work by every other author
 		#and create an InputPair for each element of the cartesian product
+		#write this output to a file and write the answer to a file as well
 		return "";
 
 	def writeInputPairsToFile(self, listOfInputPairs):
@@ -51,16 +54,9 @@ class Author:
 	def getNoStopWords(self, workIndex):
 		return "";
 
-	#I think we should count words from the split, no punctuation, document
+	#http://stackoverflow.com/questions/18429143/strip-punctuation-with-regex-python
 	def getNoPunctuation(self, workIndex):
-		content = open(self.getPath(workIndex), "r").read();
-		noPunctuation = "";
-		splitWhitespace = content.split();
-		for word in splitWhitespace:
-			word = word.rstrip("-?!.,:'");
-			word = word.lstrip("-?!.,:'");
-			noPunctuation = noPunctuation + word + " ";
-		return noPunctuation;
+		return ' '.join(word.strip(string.punctuation) for word in self.getWork(workIndex).split());
 
 	# get the work as a string with normalized white space
 	def getWork(self, workIndex):
@@ -88,11 +84,12 @@ class Features:
 	# get the average word length of this work
 	# (the sum of all the word lengths divided by the total number of words)
 	def getAvgWordLength(self):
-		# counts = [len(x) for x in self.work.split()];
-		# print len(counts)
+		# counts = [len(x) for x in self.workNoPunctuation.split()];
+		# print "lencounts" + str(len(counts));
+		# print "wordcounts" + str(self.wordCount);
 		# return float(sum(counts))/len(counts);
 		# ^^^ 2 line solution I haven't tested
-		words = self.work.split(" ");
+		words = self.workNoPunctuation.split(" ");
 		wordLengthsTotal = 0;
 		for i in range(0, len(words)):
 			wordLengthsTotal = wordLengthsTotal + len(words[i]);
@@ -115,12 +112,7 @@ class Features:
 				frequencies[10] = frequencies[10] + 1;
 			else:
 				frequencies[len(contentSplit[i])-1] = frequencies[len(contentSplit[i])-1] + 1;
-		#I think we have already counted the total number of words in the document?
-		# totalWords = 0;
-		# for i in range(0, len(self.frequencies)):
-		# 	totalWords = totalWords + self.frequencies[i];
 		for i in range(0, len(frequencies)):
-			# self.frequencies[i] = float(self.frequencies[i]) / float(totalWords);
 			frequencies[i] = float(frequencies[i]) / float(self.wordCount);
 		return frequencies;
 
@@ -180,5 +172,3 @@ if __name__ == '__main__':
 	a = Corpus();
 	inputPair = InputPair(a.authors[1], 1, a.authors[2], 1);
 	inputPair.printPairs();
-
-
