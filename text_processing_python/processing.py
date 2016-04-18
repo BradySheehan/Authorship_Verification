@@ -49,7 +49,14 @@ class Author:
 		return "";
 
 	def getNoPunctuation(self, workIndex):
-		return "";
+		content = self.works[workIndex];
+		noPunctuation = "";
+		splitWhitespace = content.split();
+		for word in splitWhitespace:
+			word = word.rstrip("-?!.,:'");
+			word = word.lstrip("-?!.,:'");
+			noPunctuation = noPunctuation + word + " ";
+		print noPunctuation;
 
 	# get the work as a string with normalized white space
 	def getWork(self, workIndex):
@@ -118,8 +125,8 @@ class Features:
 	# create a vector of sentence length percentages for each sentence length in 0-30, 30+
 	def getSenLengthPercentages(self):
 		content = self.work.split(r'[!.?]');
-		for sen in content:
-
+		# for sen in content:
+			
 		return 0.0;
 
 	def getWordCount(self, line):
