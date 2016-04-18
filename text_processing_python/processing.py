@@ -53,14 +53,14 @@ class Author:
 
 	#I think we should count words from the split, no punctuation, document
 	def getNoPunctuation(self, workIndex):
-		content = self.works[workIndex];
+		content = open(self.getPath(workIndex), "r").read();
 		noPunctuation = "";
 		splitWhitespace = content.split();
 		for word in splitWhitespace:
 			word = word.rstrip("-?!.,:'");
 			word = word.lstrip("-?!.,:'");
 			noPunctuation = noPunctuation + word + " ";
-		print noPunctuation;
+		return noPunctuation;
 
 	# get the work as a string with normalized white space
 	def getWork(self, workIndex):
@@ -75,13 +75,15 @@ class Features:
 		self.author = author;
 		self.workIndex = workIndex;
 		self.work = self.author.getWork(workIndex);
-		self.wordCount = self.getWordCount(self.work);
-		# self.wordCount = self.getWordCount(self.getWorkNoPunctuation()); 
-		# once we test noPunctuation, let's count words that way ^^^
-		self.sentenceCount = self.getSentenceCount();
+		self.workNoPunctuation = self.author.getNoPunctuation(workIndex);
+		self.wordCount = self.getWordCount(self.workNoPunctuation);
+		self.sentenceCount = self.getSentenceCount(self.work);
 
-	def getSentenceCount(self):
-		return len(re.findall(r'[.!?]', self.work));
+	def getWordCount(self, line):
+		return len(re.findall(r"\w+(?:-\w+)+|\w+", line));
+
+	def getSentenceCount(self, line):
+		return len(re.findall(r'[.!?]', line));
 
 	# get the average word length of this work
 	# (the sum of all the word lengths divided by the total number of words)
@@ -129,9 +131,6 @@ class Features:
 		content = self.work.split(r'[!.?]');
 
 		return 0.0;
-
-	def getWordCount(self, line):
-		return len(re.findall(r"\w+(?:-\w+)+|\w+", line));
 
 	# concatenate all of the above features into a numerical vector
 	# this will need to be changes because the last two fields will be vectors
