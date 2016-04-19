@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import sys
 import operator
@@ -34,9 +35,9 @@ class Corpus:
 
 	def printAuthorsAndWorks(self):
 		for author in self.authors:
-			print "Author: " + author.name;
+			print("Author: " + author.name);
 			for i in range(0, len(author.works)):
-				print "\tWork " + str(i) + ":  " + author.works[i];
+				print("\tWork " + str(i) + ":  " + author.works[i]);
 
 	def generateDifferentInputPairs(self):
 		#generate all combinations of different authors and all combinations of the same author
@@ -69,11 +70,14 @@ class Corpus:
 			features.update({self.authors[i].name:authorworks});
 		return features;
 
-	def writeInputPairsToFile(self, listOfInputPairs):
+	def writeInputPairsToFile(self):
 		f = open("test.txt", 'w+');
+		print(len(self.differentPairs));
 		for i in range(0, len(self.differentPairs)):
-			pair = self.differentPairs(i);
-			print pair.
+			pair = self.differentPairs[i];
+			featureList = self.features[pair.author1.name];
+			featureList2 = self.features[pair.author2.name];
+			print(featureList[pair.workIndex1].getFeatureVector() + featureList2[pair.workIndex2].getFeatureVector(), file = f);
 		return "";
 
 	def printAllFeatures(self):
@@ -168,20 +172,20 @@ class Features:
 	# concatenate all of the above features into a numerical vector (as a string)
 	def getFeatureVector(self):
 		features = "";
-		features = features + self.getAvgWordLength();
-		features = features + self.getAvgSenLength();
-		features = features + self.getWordLengthPercentages();
-		features = features + self.getSenLengthPercentages();
+		features = features + str(self.getAvgWordLength());
+		features = features + str(self.getAvgSenLength());
+		features = features + str(self.getWordLengthPercentages());
+		features = features + str(self.getSenLengthPercentages());
 		return features;
 
 	def printFeatures(self):
-		print "Author: " + self.author.name + ", Work: " + self.author.works[self.workIndex];
-		print "word count: " + str(self.wordCount);
-		print "sentence count: " + str(self.sentenceCount);
-		print "Average word length: " + str(self.getAvgWordLength());
-		print "Average sent length: " + str(self.getAvgSenLength());
-		print "word length percentages: " + str(self.getWordLengthPercentages()) + "\n";
-		print "sen length percentages: " + str(self.getSenLengthPercentages()) + "\n";
+		print("Author: " + self.author.name + ", Work: " + self.author.works[self.workIndex]);
+		print("word count: " + str(self.wordCount));
+		print("sentence count: " + str(self.sentenceCount));
+		print("Average word length: " + str(self.getAvgWordLength()));
+		print("Average sent length: " + str(self.getAvgSenLength()));
+		print("word length percentages: " + str(self.getWordLengthPercentages()) + "\n");
+		print("sen length percentages: " + str(self.getSenLengthPercentages()) + "\n");
 
 # Each input pair is two sets of vectors (possibly a vector of vectors)
 # that define one input that will be given to the neural network
@@ -195,6 +199,7 @@ class InputPair:
 if __name__ == '__main__':
 	a = Corpus();
 	a.generateSameInputPairs();
+	a.writeInputPairsToFile();
 	# diff = a.generateInputPairs();
 	# for i in range(0, len(diff)):
 	# 	diff[i].printPair();
