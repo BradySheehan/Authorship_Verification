@@ -82,9 +82,9 @@ class Corpus:
 		return "";
 
 	#Specify the number of ones or zeros to write and if its ones or zeros
-	def writeOutputTargets(self, filename, numpairs, ones):
+	def writeOutputTargets(self, numpairs, filename, ones):
 		f = open(filename, 'w+');
-		if ones = 1:
+		if ones == 1:
 			for i in range(0, numpairs):
 				print("1", file=f);
 				if ones = 1:
@@ -211,8 +211,10 @@ class InputPair:
 if __name__ == '__main__':
 	t0 = time.time();
 	a = Corpus();
-	a.generateSameInputPairs();
-	a.writeInputPairsToFile();
+	a.generateSameInputPairs(a.samePairs, "in.txt");
+	a.generateSameInputPairs(a.differentPairs, "in2.txt");
+	a.writeInputPairsToFile(len(a.samePairs), "out.txt", 1);
+	a.writeInputPairsToFile(len(a.differentPairs), "out2.txt", 0);
 	t1 = time.time();
 	print t1-t0;
 	# diff = a.generateInputPairs();
