@@ -70,6 +70,10 @@ class Corpus:
 		return features;
 
 	def writeInputPairsToFile(self, listOfInputPairs):
+		f = open("test.txt", 'w+');
+		for i in range(0, len(self.differentPairs)):
+			pair = self.differentPairs(i);
+			print pair.
 		return "";
 
 	def printAllFeatures(self):
