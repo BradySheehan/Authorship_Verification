@@ -87,7 +87,6 @@ class Corpus:
 		if ones == 1:
 			for i in range(0, numpairs):
 				print("1", file=f);
-				if ones = 1:
 		else:
 			for i in range(0, numpairs):
 				print("0", file=f);		
@@ -211,12 +210,13 @@ class InputPair:
 if __name__ == '__main__':
 	t0 = time.time();
 	a = Corpus();
-	a.generateSameInputPairs(a.samePairs, "in.txt");
-	a.generateSameInputPairs(a.differentPairs, "in2.txt");
-	a.writeInputPairsToFile(len(a.samePairs), "out.txt", 1);
-	a.writeInputPairsToFile(len(a.differentPairs), "out2.txt", 0);
+	a.writeInputPairsToFile(a.samePairs, "in.txt");
+	a.writeInputPairsToFile(a.differentPairs, "in2.txt");
+	a.writeOutputTargets(len(a.samePairs), "out.txt", 1);
+	a.writeOutputTargets(len(a.differentPairs), "out2.txt", 0);
 	t1 = time.time();
-	print t1-t0;
+	duration = t1-t0;
+	print(duration);
 	# diff = a.generateInputPairs();
 	# for i in range(0, len(diff)):
 	# 	diff[i].printPair();
