@@ -4,6 +4,7 @@ import sys
 import operator
 import re
 import string
+import time
 
 #This code was written and tested with version 2.7.* of Python by Brady Sheehan
 #and Matthew Sobocinski.
@@ -70,16 +71,27 @@ class Corpus:
 			features.update({self.authors[i].name:authorworks});
 		return features;
 
-	def writeInputPairsToFile(self):
-		f = open("test.txt", 'w+');
-		print(len(self.differentPairs));
-		for i in range(0, len(self.differentPairs)):
-			pair = self.differentPairs[i];
+	#Writes a given vector of InputPairs to a file for processing with matlab neural network
+	def writeInputPairsToFile(self, pairs, filename):
+		f = open(filename, 'w+');
+		for i in range(0, len(pairs)):
+			pair = pairs[i];
 			featureList = self.features[pair.author1.name];
 			featureList2 = self.features[pair.author2.name];
-			print(featureList[pair.workIndex1].getFeatureVector() + featureList2[pair.workIndex2].getFeatureVector(), file = f);
+			print(featureList[pair.workIndex1].getFeatureVector() + "," + featureList2[pair.workIndex2].getFeatureVector(), file = f);
 		return "";
 
+	#Specify the number of ones or zeros to write and if its ones or zeros
+	def writeOutputTargets(self, filename, numpairs, ones):
+		f = open(filename, 'w+');
+		if ones = 1:
+			for i in range(0, numpairs):
+				print("1", file=f);
+				if ones = 1:
+		else:
+			for i in range(0, numpairs):
+				print("0", file=f);		
+		
 	def printAllFeatures(self):
 		for author, works in self.features.iteritems():
 			for i in range(0, len(works)):
@@ -172,10 +184,10 @@ class Features:
 	# concatenate all of the above features into a numerical vector (as a string)
 	def getFeatureVector(self):
 		features = "";
-		features = features + str(self.getAvgWordLength());
-		features = features + str(self.getAvgSenLength());
-		features = features + str(self.getWordLengthPercentages());
-		features = features + str(self.getSenLengthPercentages());
+		features = features + str(self.getAvgWordLength()) + ",";
+		features = features + str(self.getAvgSenLength()) + ",";
+		features = features + str(self.getWordLengthPercentages()).rstrip(r"]").lstrip(r"[") + "," ;
+		features = features + str(self.getSenLengthPercentages()).rstrip(r"]").lstrip(r"[");
 		return features;
 
 	def printFeatures(self):
@@ -197,9 +209,12 @@ class InputPair:
 		self.workIndex2 = workIndex2;
 
 if __name__ == '__main__':
+	t0 = time.time();
 	a = Corpus();
 	a.generateSameInputPairs();
 	a.writeInputPairsToFile();
+	t1 = time.time();
+	print t1-t0;
 	# diff = a.generateInputPairs();
 	# for i in range(0, len(diff)):
 	# 	diff[i].printPair();
