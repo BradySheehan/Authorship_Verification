@@ -13,7 +13,9 @@ class Corpus:
 		self.authors = [];
 		self.authornames = [];
 		self.initializeAuthors();
-		self.features = self.generateFeatures();
+		self.features = self.generateFeatures(); #dictionary
+		self.differentPairs = self.generateDifferentInputPairs();
+		self.samePairs = self.generateSameInputPairs();
 
 	def initializeAuthors(self):
 		self.authornames = self.getAllFiles("authors/");
@@ -36,7 +38,7 @@ class Corpus:
 			for i in range(0, len(author.works)):
 				print "\tWork " + str(i) + ":  " + author.works[i];
 
-	def generateInputPairs(self):
+	def generateDifferentInputPairs(self):
 		#generate all combinations of different authors and all combinations of the same author
 		diff = [];
 		for i in range(0, len(self.authors)):
@@ -44,20 +46,36 @@ class Corpus:
 				for j in range(0, len(self.authors)):
 				 	if self.authors[i].name != self.authors[j].name:
 						for jj in range(0, len(self.authors[j].works)):
-							print "1 - " + str(self.authors[i].printAuthorAndWork(ii)) + "\t 2 - " + str(self.authors[j].printAuthorAndWork(jj));
+							# print "1 - " + str(self.authors[i].printAuthorAndWork(ii)) + "\t 2 - " + str(self.authors[j].printAuthorAndWork(jj));
 							diff.append(InputPair(self.authors[i], ii, self.authors[j], jj));
 		return diff;
 
+	def generateSameInputPairs(self):
+		same = [];
+		for i in range(0, len(self.authors)):
+			for j in range(0, len(self.authors[i].works)):
+				for jj in range(0, len(self.authors[i].works)):
+					if self.authors[i].works[j] != self.authors[i].works[jj]:
+						# print "1 - " + str(self.authors[i].printAuthorAndWork(j)) + "\t 2 - " + str(self.authors[i].printAuthorAndWork(jj));
+						same.append(InputPair(self.authors[i], j, self.authors[i], jj));
+		return same;
+
 	def generateFeatures(self):
+		features = {};
 		for i in range(0, len(self.authors)):
 			authorworks = [];
-			for j in range(0, len(self.authors.works)):
-				authorworks.append(Feature(self.authors[i], j));
-			features.update{self.authors[i].name:authorworks};
+			for j in range(0, len(self.authors[i].works)):
+				authorworks.append(Features(self.authors[i], j));
+			features.update({self.authors[i].name:authorworks});
 		return features;
 
 	def writeInputPairsToFile(self, listOfInputPairs):
 		return "";
+
+	def printAllFeatures(self):
+		for author, works in self.features.iteritems():
+			for i in range(0, len(works)):
+				works[i].printFeatures();
 
 # note that the author class returns the works as a string and not as a list
 class Author:
@@ -169,23 +187,10 @@ class InputPair:
 		self.author2 = author2;
 		self.workIndex1 = workIndex1;
 		self.workIndex2 = workIndex2;
-		self.feature1 = "";
-		self.feature2 = "";
-		self.initializeFeatureVectors();
-
-	def initializeFeatureVectors(self):
-		self.feature1 = Features(self.author1, self.workIndex1);
-		self.feature2 = Features(self.author2, self.workIndex2);
-
-	def printPair(self):
-		self.feature1.printFeatures();
-		self.feature2.printFeatures();
 
 if __name__ == '__main__':
 	a = Corpus();
-	inputPair = InputPair(a.authors[1], 1, a.authors[2], 1);
-	inputPair.printPair();
-
+	a.generateSameInputPairs();
 	# diff = a.generateInputPairs();
 	# for i in range(0, len(diff)):
 	# 	diff[i].printPair();
