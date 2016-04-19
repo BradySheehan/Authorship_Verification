@@ -180,11 +180,23 @@ class Features:
 			frequencies[i] = float(frequencies[i]) / float(len(re.findall(r'[.!?]', self.work)));
 		return frequencies;
 
+			# create a vector of sentence length percentages for each sentence length in 1-30, 30+
+	def getSenLengthPercentages2(self):
+		contentSplit = filter(None, re.split(r'[!.?]', self.work));
+		frequencies = 10 * [0];
+		for i in range(0, len(contentSplit)):
+			wordCount = len(re.findall(r"\w+(?:-\w+)+|\w+", contentSplit[i]));
+			if wordCount > 30:
+				frequencies[9] += 1;
+			else:
+				frequencies[(wordCount/3)+(wordCount%3)-1] += 1;
+		for i in range(0, len(frequencies)):
+			frequencies[i] = float(frequencies[i]) / float(len(re.findall(r'[.!?]', self.work)));
+		return frequencies;
+
 	# concatenate all of the above features into a numerical vector (as a string)
 	def getFeatureVector(self):
 		features = "";
-		features = features + str(self.getAvgWordLength()) + ",";
-		features = features + str(self.getAvgSenLength()) + ",";
 		features = features + str(self.getWordLengthPercentages()).rstrip(r"]").lstrip(r"[") + "," ;
 		features = features + str(self.getSenLengthPercentages()).rstrip(r"]").lstrip(r"[");
 		return features;
@@ -195,11 +207,10 @@ class Features:
 		print("sentence count: " + str(self.sentenceCount));
 		print("Average word length: " + str(self.getAvgWordLength()));
 		print("Average sent length: " + str(self.getAvgSenLength()));
-		print("word length percentages: " + str(self.getWordLengthPercentages()) + "\n");
+		print("word length percentages: " + str(self.getWordLengthPercentages()));
 		print("sen length percentages: " + str(self.getSenLengthPercentages()) + "\n");
 
-# Each input pair is two sets of vectors (possibly a vector of vectors)
-# that define one input that will be given to the neural network
+# Pair together 2 sets of author objects and indices of their works
 class InputPair:
 	def __init__(self, author1, workIndex1, author2, workIndex2):
 		self.author1 = author1;
@@ -208,20 +219,29 @@ class InputPair:
 		self.workIndex2 = workIndex2;
 
 if __name__ == '__main__':
-	t0 = time.time();
+
 	a = Corpus();
-	a.writeInputPairsToFile(a.samePairs, "in.txt");
-	a.writeInputPairsToFile(a.differentPairs, "in2.txt");
-	a.writeOutputTargets(len(a.samePairs), "out.txt", 1);
-	a.writeOutputTargets(len(a.differentPairs), "out2.txt", 0);
-	t1 = time.time();
-	duration = t1-t0;
-	print(duration);
+	# inputpair = InputPair(a.authors[1], 1, a.authors[2], 1);
+
+	# featureList1 = a.features[a.authors[1].name];
+	# featureList2 = a.features[a.authors[2].name];
+
+	# featureList1[1].printFeatures();
+	# featureList2[1].printFeatures();
+	# 
+	# a.writeInputPairsToFile(a.samePairs, "in.txt");
+	# a.writeInputPairsToFile(a.differentPairs, "in2.txt");
+	# a.writeOutputTargets(len(a.samePairs), "out.txt", 1);
+	# a.writeOutputTargets(len(a.differentPairs), "out2.txt", 0);
+
 	# diff = a.generateInputPairs();
 	# for i in range(0, len(diff)):
 	# 	diff[i].printPair();
 
-
+	# t0 = time.time();
+	# t1 = time.time();
+	# duration = t1-t0;
+	# print(duration);
 
 
 
