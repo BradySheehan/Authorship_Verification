@@ -13,6 +13,7 @@ class Corpus:
 		self.authors = [];
 		self.authornames = [];
 		self.initializeAuthors();
+		self.features = self.generateFeatures();
 
 	def initializeAuthors(self):
 		self.authornames = self.getAllFiles("authors/");
@@ -36,11 +37,24 @@ class Corpus:
 				print "\tWork " + str(i) + ":  " + author.works[i];
 
 	def generateInputPairs(self):
-		#take the cartesian product of all of the works by an author with every other
-		#work by every other author
-		#and create an InputPair for each element of the cartesian product
-		#write this output to a file and write the answer to a file as well
-		return "";
+		#generate all combinations of different authors and all combinations of the same author
+		diff = [];
+		for i in range(0, len(self.authors)):
+			for ii in range(0, len(self.authors[i].works)):
+				for j in range(0, len(self.authors)):
+				 	if self.authors[i].name != self.authors[j].name:
+						for jj in range(0, len(self.authors[j].works)):
+							print "1 - " + str(self.authors[i].printAuthorAndWork(ii)) + "\t 2 - " + str(self.authors[j].printAuthorAndWork(jj));
+							diff.append(InputPair(self.authors[i], ii, self.authors[j], jj));
+		return diff;
+
+	def generateFeatures(self):
+		for i in range(0, len(self.authors)):
+			authorworks = [];
+			for j in range(0, len(self.authors.works)):
+				authorworks.append(Feature(self.authors[i], j));
+			features.update{self.authors[i].name:authorworks};
+		return features;
 
 	def writeInputPairsToFile(self, listOfInputPairs):
 		return "";
@@ -64,6 +78,9 @@ class Author:
 
 	def getPath(self, workIndex):
 		return "authors/"+self.name+"/"+self.works[workIndex];
+
+	def printAuthorAndWork(self, workIndex):
+		return "Author: " + self.name + ", Work: " + self.works[workIndex];
 
 
 class Features:
@@ -99,40 +116,41 @@ class Features:
 	def getAvgSenLength(self):
 		return float(self.wordCount)/self.sentenceCount;
 
-	# create a vector of percentage for each word length 'n' in [0-10,11+]
-		numSentences = len(re.findall(r'[!.?]', self.work));
-		return float(self.wordCount)/numSentences;
-
-	# create a vector of percentages for each word length 'n' in [0-10,11+]
+	# create a vector of percentages for each word length 'n' in [1-10,11+]
 	def getWordLengthPercentages(self):
 		frequencies = 11 * [0];
-		contentSplit = self.work.split();
+		contentSplit = self.workNoPunctuation.split();
 		for i in range(0, len(contentSplit)):
 			if len(contentSplit[i]) > 10:
-				frequencies[10] = frequencies[10] + 1;
+				frequencies[10] += 1;
 			else:
-				frequencies[len(contentSplit[i])-1] = frequencies[len(contentSplit[i])-1] + 1;
+				frequencies[len(contentSplit[i])-1] += 1;
 		for i in range(0, len(frequencies)):
 			frequencies[i] = float(frequencies[i]) / float(self.wordCount);
 		return frequencies;
 
-
-	# create a vector of sentence length percentages for each sentence length in 0-30, 30+
+	# create a vector of sentence length percentages for each sentence length in 1-30, 30+
 	def getSenLengthPercentages(self):
-		# self.
-		content = self.work.split(r'[!.?]');
+		contentSplit = filter(None, re.split(r'[!.?]', self.work));
+		frequencies = 30 * [0];
+		for i in range(0, len(contentSplit)):
+			wordCount = len(re.findall(r"\w+(?:-\w+)+|\w+", contentSplit[i]));
+			if wordCount > 30:
+				frequencies[29] += 1;
+			else:
+				frequencies[wordCount-1] += 1;
+		for i in range(0, len(frequencies)):
+			frequencies[i] = float(frequencies[i]) / float(len(re.findall(r'[.!?]', self.work)));
+		return frequencies;
 
-		return 0.0;
-
-	# concatenate all of the above features into a numerical vector
-	# this will need to be changes because the last two fields will be vectors
+	# concatenate all of the above features into a numerical vector (as a string)
 	def getFeatureVector(self):
-		vector = [];
-		vector.append(self.getAvgWordLength());
-		vector.append(self.getAvgSenLength());
-		vector.append(self.getWordLengthPercentages());
-		vector.append(self.getSenLengthPercentages());
-		return vector;
+		features = "";
+		features = features + self.getAvgWordLength();
+		features = features + self.getAvgSenLength();
+		features = features + self.getWordLengthPercentages();
+		features = features + self.getSenLengthPercentages();
+		return features;
 
 	def printFeatures(self):
 		print "Author: " + self.author.name + ", Work: " + self.author.works[self.workIndex];
@@ -141,6 +159,7 @@ class Features:
 		print "Average word length: " + str(self.getAvgWordLength());
 		print "Average sent length: " + str(self.getAvgSenLength());
 		print "word length percentages: " + str(self.getWordLengthPercentages()) + "\n";
+		print "sen length percentages: " + str(self.getSenLengthPercentages()) + "\n";
 
 # Each input pair is two sets of vectors (possibly a vector of vectors)
 # that define one input that will be given to the neural network
@@ -158,17 +177,24 @@ class InputPair:
 		self.feature1 = Features(self.author1, self.workIndex1);
 		self.feature2 = Features(self.author2, self.workIndex2);
 
-	def printFeatureVectors(self):
-		print "Author1: " + self.author1.name;
-		print "\tFeatures: " + self.feature1;
-		print "\nAuthor2: " + self.author2.name;
-		print "\tFeatures: " + self.feature1;
-
-	def printPairs(self):
+	def printPair(self):
 		self.feature1.printFeatures();
 		self.feature2.printFeatures();
 
 if __name__ == '__main__':
 	a = Corpus();
 	inputPair = InputPair(a.authors[1], 1, a.authors[2], 1);
-	inputPair.printPairs();
+	inputPair.printPair();
+
+	# diff = a.generateInputPairs();
+	# for i in range(0, len(diff)):
+	# 	diff[i].printPair();
+
+
+
+
+
+
+
+
+
