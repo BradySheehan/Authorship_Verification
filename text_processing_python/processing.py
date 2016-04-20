@@ -1,37 +1,59 @@
 from __future__ import print_function
+from random import randint
 import os
 import sys
 import operator
 import re
 import string
 import time
-from random import randint
 
 #This code was written and tested with version 2.7.* of Python by Brady Sheehan
 #and Matthew Sobocinski.
 
 #Class creates objects for each author in the directory structure
 class Corpus:
-	def __init__(self, name):
+	#note we can still treat this as an empty constructor by calling it and passing None
+	#then checking if name is None or not and processing accordingly
+	def __init__(self, name=None, directory=None):
 		self.authors = [];
 		self.authornames = [];
-	 	self.initializeAuthors();
-		# self.initializeOneAuthor(name);
+		self.initializeAuthors(directory);
 		self.features = self.generateFeatures(); #dictionary
-		self.differentPairs = self.generateRandomInputPairs(name);
-		# self.differentPairs = self.generateDifferentInputPairs();
-		self.samePairs = self.generateSameInputPairs();
-		
-	# def initializeOneAuthor(self, name):
-		# a = Author(name);
-		# a.works = self.getAllFiles("authors/" + name);
-		# self.authors.append(a);
 
-	def initializeAuthors(self):
-		self.authornames = self.getAllFiles("authors/");
-		for name in self.authornames:
+		# self.differentPairs = self.generateRandomInputPairs(name);
+		# self.differentPairs = self.generateDifferentInputPairs();
+		# self.samePairs = self.generateSameInputPairs();
+	def initializeAuthors(self, directoryName=None):
+		if directoryName!=None:
+			self.authornames = self.getAllFiles(str(directoryName)+"/");
+			for name in self.authornames:
+				a = Author(name);
+				a.works = self.getAllFiles(str(directoryName)+"/"+name);
+				self.authors.append(a);
+		else:
+			self.authornames = self.getAllFiles("authors/");
+			for name in self.authornames:
+				a = Author(name);
+				a.works = self.getAllFiles("authors/"+name);
+				self.authors.append(a);
+
+	def generateFeatures(self):
+		features = {};
+		authorworks = [];
+		for i in range(0, len(self.authors)):
+			for j in range(0, len(self.authors[i].works)):
+				authorworks.append(Features(self.authors[i], j));
+			features.update({self.authors[i].name:authorworks});
+		return features;
+
+	def initializeOneAuthor(self, name, directory=None):
+		if directory!=None:
 			a = Author(name);
-			a.works = self.getAllFiles("authors/"+name);
+			a.works = self.getAllFiles(str(directory)+"/" + name);
+			self.authors.append(a);
+		else:
+			a = Author(name);
+			a.works = self.getAllFiles("authors/" + name);
 			self.authors.append(a);
 
 	#returns files/folders in directory ignoring system files
@@ -47,16 +69,17 @@ class Corpus:
 			print("Author: " + author.name);
 			for i in range(0, len(author.works)):
 				print("\tWork " + str(i) + ":  " + author.works[i]);
-				
-	
-	def generateRandomInputPairs(self, authorOfInterest):
+
+
+	def generateRandomInputPairs(self, authorOfInterest): 
+	#This expects the name of an author and not the author object
 		rand = [];
 		generated = 0;
 		index = 0;
 		for i in range(0, len(self.authors)):
 			if(self.authors[i].name == authorOfInterest):
 				index = i;
-			
+
 		numberToGenerate = len(self.authors[index].works);
 		for i in range(0, numberToGenerate): # generate n random files
 			while generated < numberToGenerate:
@@ -65,9 +88,32 @@ class Corpus:
 					randomWork = randint(0, len(self.authors[randomAuthor].works));
 					rand.append(InputPair(self.authors[index], i, self.authors[randomAuthor], randomWork));
 					generated = generated + 1;
-		return rand;					
-						
-					
+		return rand;
+
+	def generateRandomDifferentPairs2(self, numberToGenerate): 
+		print("Starting random pair generation");
+		rand = [];
+		generated = 0;
+		while generated < numberToGenerate:
+			randomAuthor1 = self.authors[randint(0, len(self.authors)-1)]; #pick a random author
+			randomAuthor2 = self.authors[randint(0, len(self.authors) - 1)];
+			if randomAuthor1.name != randomAuthor2.name:
+				rand.append(InputPair(randomAuthor1, randint(0, len(randomAuthor1.works)-1), randomAuthor2, randint(0, len(randomAuthor2.works) - 1)));
+				generated+= 1;
+		return rand;
+
+	def generateRandomSamePairs(self, numberToGenerate):
+		print("Starting random same pair generation");
+		rand = [];
+		generated = 0;
+		while generated < numberToGenerate:
+			randomAuthor1 = self.authors[randint(0, len(self.authors)-1)]; #pick a random author
+			work1 = randint(0, len(randomAuthor1.works)-1);
+			work2 = randint(0, len(randomAuthor1.works)-1);
+			if randomAuthor1.works[work1] != randomAuthor1.works[work2]:
+				rand.append(InputPair(randomAuthor1, work1, randomAuthor1, work2));
+				generated+= 1;
+		return rand;
 
 	def generateDifferentInputPairs(self): #generate all combinations of different authors and all combinations of the same author
 		diff = [];
@@ -90,15 +136,6 @@ class Corpus:
 						same.append(InputPair(self.authors[i], j, self.authors[i], jj));
 		return same;
 
-	def generateFeatures(self):
-		features = {};
-		for i in range(0, len(self.authors)):
-			authorworks = [];
-			for j in range(0, len(self.authors[i].works)):
-				authorworks.append(Features(self.authors[i], j));
-			features.update({self.authors[i].name:authorworks});
-		return features;
-
 	#Writes a given vector of InputPairs to a file for processing with matlab neural network
 	def writeInputPairsToFile(self, pairs, filename):
 		f = open(filename, 'w+');
@@ -117,12 +154,26 @@ class Corpus:
 				print("1", file=f);
 		else:
 			for i in range(0, numpairs):
-				print("0", file=f);		
-		
+				print("0", file=f);
+
 	def printAllFeatures(self):
-		for author, works in self.features.iteritems():
-			for i in range(0, len(works)):
-				works[i].printFeatures();
+		for i in range(0, len(self.authors)):
+			featureList = self.features[self.authors[i].name];
+			for j in range(0, len(featureList)):
+				featureList[j].printFeatures();
+		# for author, works in self.features.iteritems():
+		# 	for i in range(0, len(works)):
+		# 		works[i].printFeatures();
+
+	def printPairs(self, listOfPairs):
+		print("Printing Pairs");
+		for i in range(0, len(listOfPairs)):
+			print(str(i+1)+"a:");
+			featureList1 = a.features[listOfPairs[i].author1.name];
+			featureList1[listOfPairs[i].workIndex1].printFeatures();
+			print(str(i+1)+"b:");
+			featureList2 = a.features[listOfPairs[i].author2.name];
+			featureList2[listOfPairs[i].workIndex2].printFeatures();
 
 # note that the author class returns the works as a string and not as a list
 class Author:
@@ -166,11 +217,6 @@ class Features:
 	# get the average word length of this work
 	# (the sum of all the word lengths divided by the total number of words)
 	def getAvgWordLength(self):
-		# counts = [len(x) for x in self.workNoPunctuation.split()];
-		# print "lencounts" + str(len(counts));
-		# print "wordcounts" + str(self.wordCount);
-		# return float(sum(counts))/len(counts);
-		# ^^^ 2 line solution I haven't tested
 		words = self.workNoPunctuation.split(" ");
 		wordLengthsTotal = 0;
 		for i in range(0, len(words)):
@@ -217,7 +263,7 @@ class Features:
 			if wordCount > 30:
 				frequencies[9] += 1;
 			else:
-				frequencies[(wordCount/3)+(wordCount%3)-1] += 1;
+				frequencies[(wordCount-1/3)+(wordCount-1%3)-1] += 1;
 		for i in range(0, len(frequencies)):
 			frequencies[i] = float(frequencies[i]) / float(len(re.findall(r'[.!?]', self.work)));
 		return frequencies;
@@ -248,7 +294,26 @@ class InputPair:
 
 if __name__ == '__main__':
 
-	a = Corpus("james");
+
+	# print("Starting");
+	# a = Corpus();
+	# print("Finished building corpus.");
+	# listOfPairs1 = a.generateRandomDifferentPairs2(2);
+	# listOfPairs2 = a.generateRandomSamePairs(2);
+	# a.printPairs(listOfPairs1);
+	# a.printPairs(listOfPairs2);
+
+
+	print("starting");
+	a = Corpus(None, "authors2");
+	print("Finished Building Corpus.");
+	a.printAuthorsAndWorks();
+	size = len(a.features);
+	print("number of lists of features:"+str(size));
+	size2 = len(a.authornames);
+	print("number of authornames: " + str(size2));
+	a.printAllFeatures();
+
 	# inputpair = InputPair(a.authors[1], 1, a.authors[2], 1);
 
 	# featureList1 = a.features[a.authors[1].name];
@@ -256,11 +321,12 @@ if __name__ == '__main__':
 
 	# featureList1[1].printFeatures();
 	# featureList2[1].printFeatures();
-	# 
-	a.writeInputPairsToFile(a.samePairs, "in.txt");
-	a.writeInputPairsToFile(a.differentPairs, "in2.txt");
-	a.writeOutputTargets(len(a.samePairs), "out.txt", 1);
-	a.writeOutputTargets(len(a.differentPairs), "out2.txt", 0);
+	#
+
+	# a.writeInputPairsToFile(a.samePairs, "in.txt");
+	# a.writeInputPairsToFile(a.differentPairs, "in2.txt");
+	# a.writeOutputTargets(len(a.samePairs), "out.txt", 1);
+	# a.writeOutputTargets(len(a.differentPairs), "out2.txt", 0);
 
 	# diff = a.generateInputPairs();
 	# for i in range(0, len(diff)):
