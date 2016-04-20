@@ -5,19 +5,27 @@ import operator
 import re
 import string
 import time
+from random import randint
 
 #This code was written and tested with version 2.7.* of Python by Brady Sheehan
 #and Matthew Sobocinski.
 
 #Class creates objects for each author in the directory structure
 class Corpus:
-	def __init__(self):
+	def __init__(self, name):
 		self.authors = [];
 		self.authornames = [];
-		self.initializeAuthors();
+	 	self.initializeAuthors();
+		# self.initializeOneAuthor(name);
 		self.features = self.generateFeatures(); #dictionary
-		self.differentPairs = self.generateDifferentInputPairs();
+		self.differentPairs = self.generateRandomInputPairs(name);
+		# self.differentPairs = self.generateDifferentInputPairs();
 		self.samePairs = self.generateSameInputPairs();
+		
+	# def initializeOneAuthor(self, name):
+		# a = Author(name);
+		# a.works = self.getAllFiles("authors/" + name);
+		# self.authors.append(a);
 
 	def initializeAuthors(self):
 		self.authornames = self.getAllFiles("authors/");
@@ -39,15 +47,35 @@ class Corpus:
 			print("Author: " + author.name);
 			for i in range(0, len(author.works)):
 				print("\tWork " + str(i) + ":  " + author.works[i]);
-
-	def generateDifferentInputPairs(self):
-		#generate all combinations of different authors and all combinations of the same author
-		diff = [];
+				
+	
+	def generateRandomInputPairs(self, authorOfInterest):
+		rand = [];
+		generated = 0;
+		index = 0;
 		for i in range(0, len(self.authors)):
-			for ii in range(0, len(self.authors[i].works)):
-				for j in range(0, len(self.authors)):
-				 	if self.authors[i].name != self.authors[j].name:
-						for jj in range(0, len(self.authors[j].works)):
+			if(self.authors[i].name == authorOfInterest):
+				index = i;
+			
+		numberToGenerate = len(self.authors[index].works);
+		for i in range(0, numberToGenerate): # generate n random files
+			while generated < numberToGenerate:
+				randomAuthor = randint(0, len(self.authors)-1);
+				if self.authors[randomAuthor].name != authorOfInterest:
+					randomWork = randint(0, len(self.authors[randomAuthor].works));
+					rand.append(InputPair(self.authors[index], i, self.authors[randomAuthor], randomWork));
+					generated = generated + 1;
+		return rand;					
+						
+					
+
+	def generateDifferentInputPairs(self): #generate all combinations of different authors and all combinations of the same author
+		diff = [];
+		for i in range(0, len(self.authors)): # for each author
+			for ii in range(0, len(self.authors[i].works)): # for each work by this author
+				for j in range(0, len(self.authors)): # for each author
+				 	if self.authors[i].name != self.authors[j].name: # if not the i'th author
+						for jj in range(0, len(self.authors[j].works)): # generate features for each of their works
 							# print "1 - " + str(self.authors[i].printAuthorAndWork(ii)) + "\t 2 - " + str(self.authors[j].printAuthorAndWork(jj));
 							diff.append(InputPair(self.authors[i], ii, self.authors[j], jj));
 		return diff;
@@ -220,7 +248,7 @@ class InputPair:
 
 if __name__ == '__main__':
 
-	a = Corpus();
+	a = Corpus("james");
 	# inputpair = InputPair(a.authors[1], 1, a.authors[2], 1);
 
 	# featureList1 = a.features[a.authors[1].name];
@@ -229,10 +257,10 @@ if __name__ == '__main__':
 	# featureList1[1].printFeatures();
 	# featureList2[1].printFeatures();
 	# 
-	# a.writeInputPairsToFile(a.samePairs, "in.txt");
-	# a.writeInputPairsToFile(a.differentPairs, "in2.txt");
-	# a.writeOutputTargets(len(a.samePairs), "out.txt", 1);
-	# a.writeOutputTargets(len(a.differentPairs), "out2.txt", 0);
+	a.writeInputPairsToFile(a.samePairs, "in.txt");
+	a.writeInputPairsToFile(a.differentPairs, "in2.txt");
+	a.writeOutputTargets(len(a.samePairs), "out.txt", 1);
+	a.writeOutputTargets(len(a.differentPairs), "out2.txt", 0);
 
 	# diff = a.generateInputPairs();
 	# for i in range(0, len(diff)):
