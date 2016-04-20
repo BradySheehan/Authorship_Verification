@@ -149,7 +149,7 @@ class Corpus:
 	#Specify the number of ones or zeros to write and if its ones or zeros
 	def writeOutputTargets(self, numpairs, filename, ones):
 		f = open(filename, 'w+');
-		if ones == 1:
+		if ones == "1":
 			for i in range(0, numpairs):
 				print("1", file=f);
 		else:
@@ -207,6 +207,8 @@ class Features:
 		self.workNoPunctuation = self.author.getNoPunctuation(workIndex);
 		self.wordCount = self.getWordCount(self.workNoPunctuation);
 		self.sentenceCount = self.getSentenceCount(self.work);
+		self.senLengthPercentages = self.getSenLengthPercentages();
+		self.wordLengthPercentages = self.getWordLengthPercentages();
 
 	def getWordCount(self, line):
 		return len(re.findall(r"\w+(?:-\w+)+|\w+", line));
@@ -271,8 +273,8 @@ class Features:
 	# concatenate all of the above features into a numerical vector (as a string)
 	def getFeatureVector(self):
 		features = "";
-		features = features + str(self.getWordLengthPercentages()).rstrip(r"]").lstrip(r"[") + "," ;
-		features = features + str(self.getSenLengthPercentages()).rstrip(r"]").lstrip(r"[");
+		features = features + str(self.wordLengthPercentages).rstrip(r"]").lstrip(r"[") + "," ;
+		features = features + str(self.senLengthPercentages).rstrip(r"]").lstrip(r"[");
 		return features;
 
 	def printFeatures(self):
@@ -304,15 +306,15 @@ if __name__ == '__main__':
 	# a.printPairs(listOfPairs2);
 
 
-	print("starting");
-	a = Corpus(None, "authors2");
-	print("Finished Building Corpus.");
-	a.printAuthorsAndWorks();
-	size = len(a.features);
-	print("number of lists of features:"+str(size));
-	size2 = len(a.authornames);
-	print("number of authornames: " + str(size2));
-	a.printAllFeatures();
+	# print("starting");
+	# a = Corpus(None, "authors2");
+	# print("Finished Building Corpus.");
+	# a.printAuthorsAndWorks();
+	# size = len(a.features);
+	# print("number of lists of features:"+str(size));
+	# size2 = len(a.authornames);
+	# print("number of authornames: " + str(size2));
+	# a.printAllFeatures();
 
 	# inputpair = InputPair(a.authors[1], 1, a.authors[2], 1);
 
@@ -336,6 +338,19 @@ if __name__ == '__main__':
 	# t1 = time.time();
 	# duration = t1-t0;
 	# print(duration);
+	# 
+	# 
+	print("starting");
+	a = Corpus();
+	print("Finished Building Corpus.");
+	listOfPairs = a.generateRandomDifferentPairs2(15);
+	a.writeInputPairsToFile(listOfPairs, "ina3.txt");
+	a.writeOutputTargets(len(listOfPairs), "outa3.txt", "0");
+	print("processing2");
+	listOfPairs2 = a.generateRandomSamePairs(15);
+	a.writeInputPairsToFile(listOfPairs2, "inb3.txt");
+	a.writeOutputTargets(len(listOfPairs2), "outb3.txt", "1");
+
 
 
 
