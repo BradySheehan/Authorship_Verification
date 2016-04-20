@@ -341,7 +341,7 @@ if __name__ == '__main__':
 	# 
 	# 
 	print("starting");
-	a = Corpus();
+	a = Corpus(None, "authors2");
 	print("Finished Building Corpus.");
 	listOfPairs = a.generateRandomDifferentPairs2(15);
 	a.writeInputPairsToFile(listOfPairs, "ina3.txt");
