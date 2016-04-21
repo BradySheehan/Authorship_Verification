@@ -1,0 +1,15 @@
+1 - Author: bronte, Work: villette.txt, 2 - Author: james, Work: a_london_life.txt
+1 - Author: james, Work: the_reverberator.txt, 2 - Author: bronte, Work: jane_eyre.txt
+1 - Author: phillips, Work: the_grain_of_dust.txt, 2 - Author: bronte, Work: jane_eyre.txt
+1 - Author: james, Work: the_reverberator.txt, 2 - Author: bronte, Work: villette.txt
+1 - Author: bronte, Work: jane_eyre.txt, 2 - Author: james, Work: the_romance_of_certain_old_clothes.txt
+1 - Author: james, Work: the_third_person.txt, 2 - Author: bronte, Work: the_professor.txt
+1 - Author: bronte, Work: jane_eyre.txt, 2 - Author: james, Work: the_wheel_of_time.txt
+1 - Author: phillips, Work: the_fashionable_adventures_of_joshua_craig.txt, 2 - Author: james, Work: watch_and_ward.txt
+1 - Author: bronte, Work: jane_eyre.txt, 2 - Author: james, Work: the_romance_of_certain_old_clothes.txt
+1 - Author: phillips, Work: susan_lenox_her_rise_and_fall.txt, 2 - Author: james, Work: daisy_miller.txt
+1 - Author: james, Work: the_princess_casamassima.txt, 2 - Author: bronte, Work: villette.txt
+1 - Author: james, Work: the_velvet_glove.txt, 2 - Author: bronte, Work: jane_eyre.txt
+1 - Author: phillips, Work: the_price_she_paid.txt, 2 - Author: bronte, Work: villette.txt
+1 - Author: james, Work: the_third_person.txt, 2 - Author: bronte, Work: villette.txt
+1 - Author: james, Work: a_london_life.txt, 2 - Author: phillips, Work: susan_lenox_her_rise_and_fall.txt

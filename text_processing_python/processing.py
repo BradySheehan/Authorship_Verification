@@ -90,7 +90,8 @@ class Corpus:
 					generated = generated + 1;
 		return rand;
 
-	def generateRandomDifferentPairs2(self, numberToGenerate): 
+	def generateRandomDifferentPairs2(self, numberToGenerate, filename): 
+		f = open(filename, 'w+');
 		print("Starting random pair generation");
 		rand = [];
 		generated = 0;
@@ -98,11 +99,14 @@ class Corpus:
 			randomAuthor1 = self.authors[randint(0, len(self.authors)-1)]; #pick a random author
 			randomAuthor2 = self.authors[randint(0, len(self.authors) - 1)];
 			if randomAuthor1.name != randomAuthor2.name:
-				rand.append(InputPair(randomAuthor1, randint(0, len(randomAuthor1.works)-1), randomAuthor2, randint(0, len(randomAuthor2.works) - 1)));
+				pair = InputPair(randomAuthor1, randint(0, len(randomAuthor1.works)-1), randomAuthor2, randint(0, len(randomAuthor2.works) - 1));
+				rand.append(pair);
+				print(pair.printPair(), file = f);
 				generated+= 1;
 		return rand;
 
-	def generateRandomSamePairs(self, numberToGenerate):
+	def generateRandomSamePairs(self, numberToGenerate, filename):
+		f = open(filename, 'w+');
 		print("Starting random same pair generation");
 		rand = [];
 		generated = 0;
@@ -111,7 +115,9 @@ class Corpus:
 			work1 = randint(0, len(randomAuthor1.works)-1);
 			work2 = randint(0, len(randomAuthor1.works)-1);
 			if randomAuthor1.works[work1] != randomAuthor1.works[work2]:
-				rand.append(InputPair(randomAuthor1, work1, randomAuthor1, work2));
+				pair = InputPair(randomAuthor1, work1, randomAuthor1, work2);
+				rand.append(pair);
+				print(pair.printPair(), file = f);
 				generated+= 1;
 		return rand;
 
@@ -294,6 +300,8 @@ class InputPair:
 		self.workIndex1 = workIndex1;
 		self.workIndex2 = workIndex2;
 
+	def printPair(self):
+		return "1 - " + str(self.author1.printAuthorAndWork(self.workIndex1)) + ", 2 - " + str(self.author2.printAuthorAndWork(self.workIndex2));
 if __name__ == '__main__':
 
 
@@ -343,11 +351,11 @@ if __name__ == '__main__':
 	print("starting");
 	a = Corpus(None, "authors2");
 	print("Finished Building Corpus.");
-	listOfPairs = a.generateRandomDifferentPairs2(15);
+	listOfPairs = a.generateRandomDifferentPairs2(15, 'diff_pairs.txt');
 	a.writeInputPairsToFile(listOfPairs, "ina3.txt");
 	a.writeOutputTargets(len(listOfPairs), "outa3.txt", "0");
 	print("processing2");
-	listOfPairs2 = a.generateRandomSamePairs(15);
+	listOfPairs2 = a.generateRandomSamePairs(15, 'same_pairs.txt');
 	a.writeInputPairsToFile(listOfPairs2, "inb3.txt");
 	a.writeOutputTargets(len(listOfPairs2), "outb3.txt", "1");
 
