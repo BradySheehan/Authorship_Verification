@@ -251,29 +251,19 @@ class Features:
 	# create a vector of sentence length percentages for each sentence length in 1-30, 30+
 	def getSenLengthPercentages(self):
 		contentSplit = filter(None, re.split(r'[!.?]', self.work));
-		frequencies = 100 * [0];
+		frequencies = 50 * [0];
+		sentenceCount = float(len(re.findall(r'[.!?]', self.work)));
 		for i in range(0, len(contentSplit)):
 			wordCount = len(re.findall(r"\w+(?:-\w+)+|\w+", contentSplit[i]));
-			if wordCount > 100:
-				frequencies[99] += 1;
+			if wordCount !=0:
+				if wordCount > 50:
+					frequencies[49] += 1;
+				else:
+					frequencies[wordCount-1] += 1;
 			else:
-				frequencies[wordCount-1] += 1;
+				sentenceCount-= 1;
 		for i in range(0, len(frequencies)):
-			frequencies[i] = float(frequencies[i]) / float(len(re.findall(r'[.!?]', self.work)));
-		return frequencies;
-
-			# create a vector of sentence length percentages for each sentence length in 1-30, 30+
-	def getSenLengthPercentages2(self):
-		contentSplit = filter(None, re.split(r'[!.?]', self.work));
-		frequencies = 10 * [0];
-		for i in range(0, len(contentSplit)):
-			wordCount = len(re.findall(r"\w+(?:-\w+)+|\w+", contentSplit[i]));
-			if wordCount > 30:
-				frequencies[9] += 1;
-			else:
-				frequencies[(wordCount-1/3)+(wordCount-1%3)-1] += 1;
-		for i in range(0, len(frequencies)):
-			frequencies[i] = float(frequencies[i]) / float(len(re.findall(r'[.!?]', self.work)));
+			frequencies[i] = float(frequencies[i]) / sentenceCount;
 		return frequencies;
 
 	# concatenate all of the above features into a numerical vector (as a string)
@@ -359,7 +349,12 @@ if __name__ == '__main__':
 	a.writeInputPairsToFile(listOfPairs2, "plotSame.txt");
 	a.writeOutputTargets(len(listOfPairs2), "outb3.txt", "1");
 
-
+	list1 = a.features['bronte'];
+	for i in range(0, len(list1)):
+		list1[i].printFeatures();
+	print(a.features['bronte']);
+	print(a.features['james']);
+	print(a.features['phillips']);
 
 
 
