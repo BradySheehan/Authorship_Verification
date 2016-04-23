@@ -14,7 +14,7 @@ import time
 class Corpus:
 	#note we can still treat this as an empty constructor by calling it and passing None
 	#then checking if name is None or not and processing accordingly
-	def __init__(self, name=None, directory=None):
+	def __init__(self, directory=None):
 		self.authors = [];
 		self.authornames = [];
 		self.initializeAuthors(directory);
@@ -23,19 +23,19 @@ class Corpus:
 		# self.differentPairs = self.generateRandomInputPairs(name);
 		# self.differentPairs = self.generateDifferentInputPairs();
 		# self.samePairs = self.generateSameInputPairs();
-	def initializeAuthors(self, directoryName=None):
-		if directoryName!=None:
+	def initializeAuthors(self, directoryName):
+		# if directoryName!=None:
 			self.authornames = self.getAllFiles(str(directoryName)+"/");
 			for name in self.authornames:
-				a = Author(name);
+				a = Author(name, directoryName);
 				a.works = self.getAllFiles(str(directoryName)+"/"+name);
 				self.authors.append(a);
-		else:
-			self.authornames = self.getAllFiles("authors/");
-			for name in self.authornames:
-				a = Author(name);
-				a.works = self.getAllFiles("authors/"+name);
-				self.authors.append(a);
+		# else:
+		# 	self.authornames = self.getAllFiles("authors/");
+		# 	for name in self.authornames:
+		# 		a = Author(name, directoryName);
+		# 		a.works = self.getAllFiles("authors/"+name);
+		# 		self.authors.append(a);
 
 	def generateFeatures(self):
 		features = {};
@@ -183,10 +183,10 @@ class Corpus:
 
 # note that the author class returns the works as a string and not as a list
 class Author:
-	def __init__(self, name):
+	def __init__(self, name, path):
 		self.name = name;
 		self.works = []; #strings referencing the work
-
+		self.path = path;
 	def getNoStopWords(self, workIndex):
 		return "";
 
@@ -199,7 +199,7 @@ class Author:
 		return open(self.getPath(workIndex), "r").read();
 
 	def getPath(self, workIndex):
-		return "authors/"+self.name+"/"+self.works[workIndex];
+		return self.path + "/" +self.name+"/"+self.works[workIndex];
 
 	def printAuthorAndWork(self, workIndex):
 		return "Author: " + self.name + ", Work: " + self.works[workIndex];
@@ -264,6 +264,7 @@ class Features:
 				sentenceCount-= 1;
 		for i in range(0, len(frequencies)):
 			frequencies[i] = float(frequencies[i]) / sentenceCount;
+		print(frequencies);
 		return frequencies;
 
 	# concatenate all of the above features into a numerical vector (as a string)
@@ -339,7 +340,7 @@ if __name__ == '__main__':
 	# 
 	# 
 	print("starting");
-	a = Corpus(None, "authors2");
+	a = Corpus('training');
 	print("Finished Building Corpus.");
 	listOfPairs = a.generateRandomDifferentPairs2(1, 'diff_pairs.txt');
 	a.writeInputPairsToFile(listOfPairs, "plotDiff.txt");
@@ -349,12 +350,6 @@ if __name__ == '__main__':
 	a.writeInputPairsToFile(listOfPairs2, "plotSame.txt");
 	a.writeOutputTargets(len(listOfPairs2), "outb3.txt", "1");
 
-	list1 = a.features['bronte'];
-	for i in range(0, len(list1)):
-		list1[i].printFeatures();
-	print(a.features['bronte']);
-	print(a.features['james']);
-	print(a.features['phillips']);
 
 
 
