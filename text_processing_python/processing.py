@@ -46,16 +46,6 @@ class Corpus:
 			features.update({self.authors[i].name:authorworks});
 		return features;
 
-	def initializeOneAuthor(self, name, directory=None):
-		if directory!=None:
-			a = Author(name);
-			a.works = self.getAllFiles(str(directory)+"/" + name);
-			self.authors.append(a);
-		else:
-			a = Author(name);
-			a.works = self.getAllFiles("authors/" + name);
-			self.authors.append(a);
-
 	#returns files/folders in directory ignoring system files
 	def getAllFiles(self, pathName):
 		directory = [];
@@ -133,13 +123,15 @@ class Corpus:
 		return diff;
 
 	def generateSameInputPairs(self):
+		f = open("same_pair_names.txt", 'w+');
 		same = [];
 		for i in range(0, len(self.authors)):
 			for j in range(0, len(self.authors[i].works)):
 				for jj in range(0, len(self.authors[i].works)):
 					if self.authors[i].works[j] != self.authors[i].works[jj]:
-						# print "1 - " + str(self.authors[i].printAuthorAndWork(j)) + "\t 2 - " + str(self.authors[i].printAuthorAndWork(jj));
-						same.append(InputPair(self.authors[i], j, self.authors[i], jj));
+						pair = InputPair(self.authors[i], j, self.authors[i], jj);
+						same.append(pair);
+						print(pair.printPair(), file = f);
 		return same;
 
 	#Writes a given vector of InputPairs to a file for processing with matlab neural network
@@ -180,6 +172,22 @@ class Corpus:
 			print(str(i+1)+"b:");
 			featureList2 = a.features[listOfPairs[i].author2.name];
 			featureList2[listOfPairs[i].workIndex2].printFeatures();
+
+	def generateAllDiffPairs(self):
+		print("generating all different pairs from corpus");
+		inputPairList = [];
+		f = open("diff_pair_names.txt", 'w+');
+		for i in range(0, len(self.authors)):
+			for ii in range(0, len(self.authors)):
+				if i!=ii:
+					featureList1 = self.features[self.authors[i].name];
+					featureList2 = self.features[self.authors[ii].name];
+					for j in range(0, len(self.authors[i].works)):
+						for jj in range(0, len(self.authors[ii].works)):
+							pair = InputPair(self.authors[i], j, self.authors[ii], jj);
+							inputPairList.append(pair);
+							print(pair.printPair(), file=f);
+		return inputPairList;
 
 # note that the author class returns the works as a string and not as a list
 class Author:
@@ -339,14 +347,16 @@ if __name__ == '__main__':
 	# 
 
 	print("starting");
-	a = Corpus('training');
+	a = Corpus('../data/corpus/outgroup');
 	print("Finished Building Corpus.");
-	listOfPairs = a.generateRandomDifferentPairs2(1, 'in1.txt');
-	a.writeInputPairsToFile(listOfPairs, "plotDiff.txt");
+
+	listOfPairs = a.generateAllDiffPairs();
+	a.writeInputPairsToFile(listOfPairs, "all_diff_pairs.txt");
 	a.writeOutputTargets(len(listOfPairs), "out1.txt", "0");
+
 	print("processing2");
-	listOfPairs2 = a.generateRandomSamePairs(1, 'same_pairs.txt');
-	a.writeInputPairsToFile(listOfPairs2, "in2.txt");
+	listOfPairs2 = a.generateSameInputPairs();
+	a.writeInputPairsToFile(listOfPairs2, "all_same_pairs.txt");
 	a.writeOutputTargets(len(listOfPairs2), "out2.txt", "1");
 
 
