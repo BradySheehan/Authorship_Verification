@@ -251,20 +251,19 @@ class Features:
 	# create a vector of sentence length percentages for each sentence length in 1-30, 30+
 	def getSenLengthPercentages(self):
 		contentSplit = filter(None, re.split(r'[!.?]', self.work));
-		frequencies = 50 * [0];
+		frequencies = 75* [0];
 		sentenceCount = float(len(re.findall(r'[.!?]', self.work)));
 		for i in range(0, len(contentSplit)):
 			wordCount = len(re.findall(r"\w+(?:-\w+)+|\w+", contentSplit[i]));
 			if wordCount !=0:
-				if wordCount > 50:
-					frequencies[49] += 1;
+				if wordCount > 75:
+					frequencies[74] += 1;
 				else:
 					frequencies[wordCount-1] += 1;
 			else:
 				sentenceCount-= 1;
 		for i in range(0, len(frequencies)):
 			frequencies[i] = float(frequencies[i]) / sentenceCount;
-		print(frequencies);
 		return frequencies;
 
 	# concatenate all of the above features into a numerical vector (as a string)
@@ -338,17 +337,17 @@ if __name__ == '__main__':
 	# duration = t1-t0;
 	# print(duration);
 	# 
-	# 
+
 	print("starting");
 	a = Corpus('training');
 	print("Finished Building Corpus.");
-	listOfPairs = a.generateRandomDifferentPairs2(1, 'diff_pairs.txt');
+	listOfPairs = a.generateRandomDifferentPairs2(1, 'in1.txt');
 	a.writeInputPairsToFile(listOfPairs, "plotDiff.txt");
-	a.writeOutputTargets(len(listOfPairs), "outa3.txt", "0");
+	a.writeOutputTargets(len(listOfPairs), "out1.txt", "0");
 	print("processing2");
 	listOfPairs2 = a.generateRandomSamePairs(1, 'same_pairs.txt');
-	a.writeInputPairsToFile(listOfPairs2, "plotSame.txt");
-	a.writeOutputTargets(len(listOfPairs2), "outb3.txt", "1");
+	a.writeInputPairsToFile(listOfPairs2, "in2.txt");
+	a.writeOutputTargets(len(listOfPairs2), "out2.txt", "1");
 
 
 
