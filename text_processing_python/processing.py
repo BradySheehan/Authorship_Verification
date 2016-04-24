@@ -259,13 +259,13 @@ class Features:
 	# create a vector of sentence length percentages for each sentence length in 1-30, 30+
 	def getSenLengthPercentages(self):
 		contentSplit = filter(None, re.split(r'[!.?]', self.work));
-		frequencies = 75* [0];
+		frequencies = 50* [0];
 		sentenceCount = float(len(re.findall(r'[.!?]', self.work)));
 		for i in range(0, len(contentSplit)):
 			wordCount = len(re.findall(r"\w+(?:-\w+)+|\w+", contentSplit[i]));
 			if wordCount !=0:
-				if wordCount > 75:
-					frequencies[74] += 1;
+				if wordCount > 50:
+					frequencies[49] += 1;
 				else:
 					frequencies[wordCount-1] += 1;
 			else:
@@ -347,7 +347,7 @@ if __name__ == '__main__':
 	# 
 
 	print("starting");
-	a = Corpus('../data/corpus/outgroup');
+	a = Corpus('../data/corpus/ingroup');
 	print("Finished Building Corpus.");
 
 	listOfPairs = a.generateAllDiffPairs();
