@@ -2,7 +2,7 @@ function result = network_parameter_testing()
 dbstop if error
 [in, out] = processdata();
 trainFcn = {'trainscg', 'traincgb', 'traincgf', 'traincgp'};
-hiddenLayerSize = [10:25, 35, 50, 100];
+hiddenLayerSize = [10, 12, 15, 20, 25, 35, 60, 75, 100, 250];
 save('testing_data', 'in', 'out', 'trainFcn', 'hiddenLayerSize');
 ind = 1;
 for ii = 1:length(trainFcn)

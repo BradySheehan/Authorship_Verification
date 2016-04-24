@@ -6,6 +6,9 @@
 %
 %   in - input data.
 %   out - target data.
+% This script assumes this function is available:
+% 
+%   getWinRate.m
 function [net,outputs, performance, percentCorrect, trainFcn, hiddenLayerSize, tr] = pattern_network(in, out, trainFcn, hiddenLayerSize)
 inputs = in';
 targets = out';
@@ -14,7 +17,8 @@ targets = out';
 % hiddenLayerSize = 250
 % trainFcn = 'trainscg';
 % trainFcn = 'trainlm'
-net = patternnet(hiddenLayerSize, trainFcn);
+net = patternnet(hiddenLayerSize, trainFcn, 'mse');
+trainFcn = net.trainFcn;
 
 
 % Setup Division of Data for Training, Validation, Testing
@@ -46,5 +50,5 @@ view(net);
 % figure, ploterrhist(errors);
 
 
-percentCorrect = getMissRate(out', outputs);
+percentCorrect = getWinRate(targets, outputs);
 end
