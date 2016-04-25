@@ -1,11 +1,16 @@
+/*
+	Takes a folder of novels and combines all of the works by each author into a single file.  
+	Assumes that each file name begins with "author-name", followed by an underscore.
+	The paths must be manually set, as the original raw data is not included with this project.
+*/
+
 import java.io.*;
 import java.util.*;
 
 class JoinAuthors {
 	public static HashMap<String, ArrayList<File>> authors = new HashMap<String, ArrayList<File>>();
-	
 	public static void main(String[] args) throws IOException {
-		final File folder = new File("novels");
+		final File folder = new File("INPUT_FILES_HERE");
 		listFilesForFolder(folder);
 		combineFiles();
 	}
@@ -29,11 +34,11 @@ class JoinAuthors {
 	
 	public static void combineFiles() throws IOException {
 		for(String lastName : authors.keySet()) {
-			BufferedWriter bw = new BufferedWriter(new FileWriter("../output/" + lastName + ".txt"));
+			BufferedWriter bw = new BufferedWriter(new FileWriter("OUTPUT_FOLDER_HERE" + lastName + ".txt"));
 			try {
 				String line = null;
 				for (File file : authors.get(lastName)) {
-					BufferedReader br = new BufferedReader(new FileReader("/Users/matthewsobocinski/Desktop/novels/" + file.getName()));
+					BufferedReader br = new BufferedReader(new FileReader("INPUT_FOLDER_HERE" + file.getName()));
 					while ((line = br.readLine()) != null) {
 						bw.write(line + "\n");
 					}
