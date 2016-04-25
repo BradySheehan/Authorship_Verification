@@ -1,18 +1,15 @@
-
-
-
 function result = network_parameter_plots()
-
 
 file_list = get_all_files('C:\Users\');
 ind = 1;
 hiddenLayerSize = [10, 12, 15, 20, 25, 35, 60, 75, 100, 250];
 xplot = 1:length(hiddenLayerSize);
+
 for file = file_list(:)'
     [pathstr, name, ext] = fileparts(char(file));
     if(strcmp(ext,'.mat') && length(strfind(name, '2network'))~=0)
         load(char(file));
-        perf_value(ind) = performance; %#ok<*AGROW>
+        perf_value(ind) = performance;
         rate(ind) = percentCorrect;
         trainFcn2
         if(ind == length(hiddenLayerSize))
@@ -33,4 +30,5 @@ for file = file_list(:)'
         
     end
 end
+
 end
