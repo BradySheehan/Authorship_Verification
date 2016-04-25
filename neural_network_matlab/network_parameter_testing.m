@@ -1,3 +1,9 @@
+%Script for generating neural network objects with various paramaters (as
+% in trainFnc and hiddenLayerSize). It loads the training data from memory
+% (using the processdata() function). The script also saves all of the data
+% related to the network objects created to memory to be loaded and
+% analyzed later with the network_paramater_plots() function.
+
 function network_parameter_testing()
 [in, out] = processdata();
 trainFcn = {'trainscg','traincgb','traincgf','traincgp','trainlm','trainbr','trainrp'};

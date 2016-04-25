@@ -1,9 +1,7 @@
-
-
-
+%Script for loading the .mat files generated from
+%network_parameter_testing() and plotting the performance of the neural
+%network configurations for analysis. 
 function result = network_parameter_plots()
-
-
 file_list = get_all_files('C:\Users\');
 ind = 1;
 hiddenLayerSize = [10, 12, 15, 20, 25, 35, 60, 75, 100, 250];
@@ -30,7 +28,6 @@ for file = file_list(:)'
             ind = 1;
         end
         ind = ind + 1;
-        
     end
 end
 end
