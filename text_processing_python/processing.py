@@ -54,7 +54,6 @@ class Corpus:
 				directory.append(item);
 		return directory;
 
-	# for testing purposes only
 	def printAuthorsAndWorks(self):
 		for author in self.authors:
 			print("Author: " + author.name);
@@ -62,15 +61,15 @@ class Corpus:
 				print("\tWork " + str(i) + ":  " + author.works[i]);
 
 
-	# This expects the name of an author and not the author object
-	# Generates random pairs of works by different authors
 	def generateRandomInputPairs(self, authorOfInterest): 
+	#This expects the name of an author and not the author object
 		rand = [];
 		generated = 0;
 		index = 0;
 		for i in range(0, len(self.authors)):
 			if(self.authors[i].name == authorOfInterest):
 				index = i;
+
 		numberToGenerate = len(self.authors[index].works);
 		for i in range(0, numberToGenerate): # generate n random files
 			while generated < numberToGenerate:
@@ -112,19 +111,17 @@ class Corpus:
 				generated+= 1;
 		return rand;
 
-	# Generate all combinations of different authors and all combinations of the same author
-	def generateDifferentInputPairs(self): 
+	def generateDifferentInputPairs(self): #generate all combinations of different authors and all combinations of the same author
 		diff = [];
-		for i in range(0, len(self.authors)): 
-			for ii in range(0, len(self.authors[i].works)):
-				for j in range(0, len(self.authors)):
-				 	if self.authors[i].name != self.authors[j].name: 
-						for jj in range(0, len(self.authors[j].works)):
+		for i in range(0, len(self.authors)): # for each author
+			for ii in range(0, len(self.authors[i].works)): # for each work by this author
+				for j in range(0, len(self.authors)): # for each author
+				 	if self.authors[i].name != self.authors[j].name: # if not the i'th author
+						for jj in range(0, len(self.authors[j].works)): # generate features for each of their works
 							# print "1 - " + str(self.authors[i].printAuthorAndWork(ii)) + "\t 2 - " + str(self.authors[j].printAuthorAndWork(jj));
 							diff.append(InputPair(self.authors[i], ii, self.authors[j], jj));
 		return diff;
 
-	# Generate pairs of works by the same author
 	def generateSameInputPairs(self):
 		f = open("same_pair_names.txt", 'w+');
 		same = [];
@@ -137,7 +134,7 @@ class Corpus:
 						print(pair.printPair(), file = f);
 		return same;
 
-	# Writes a given vector of InputPairs to a file for processing with matlab neural network
+	#Writes a given vector of InputPairs to a file for processing with matlab neural network
 	def writeInputPairsToFile(self, pairs, filename):
 		f = open(filename, 'w+');
 		for i in range(0, len(pairs)):
@@ -147,7 +144,7 @@ class Corpus:
 			print(featureList[pair.workIndex1].getFeatureVector() + "," + featureList2[pair.workIndex2].getFeatureVector(), file = f);
 		return "";
 
-	# Specify the number of ones or zeros to write and if its ones or zeros
+	#Specify the number of ones or zeros to write and if its ones or zeros
 	def writeOutputTargets(self, numpairs, filename, ones):
 		f = open(filename, 'w+');
 		if ones == "1":
@@ -162,6 +159,9 @@ class Corpus:
 			featureList = self.features[self.authors[i].name];
 			for j in range(0, len(featureList)):
 				featureList[j].printFeatures();
+		# for author, works in self.features.iteritems():
+		# 	for i in range(0, len(works)):
+		# 		works[i].printFeatures();
 
 	def printPairs(self, listOfPairs):
 		print("Printing Pairs");
@@ -256,7 +256,7 @@ class Features:
 			frequencies[i] = float(frequencies[i]) / float(self.wordCount);
 		return frequencies;
 
-	# create a vector of sentence length percentages for each sentence length in 1-30, 30+
+	# create a vector of sentence length percentages for each sentence length in 1-50, 50+
 	def getSenLengthPercentages(self):
 		contentSplit = filter(None, re.split(r'[!.?]', self.work));
 		frequencies = 50* [0];
@@ -265,7 +265,7 @@ class Features:
 			wordCount = len(re.findall(r"\w+(?:-\w+)+|\w+", contentSplit[i]));
 			if wordCount !=0:
 				if wordCount > 50:
-					frequencies[49] += 1;
+					frequencies[49] +=  1;
 				else:
 					frequencies[wordCount-1] += 1;
 			else:
@@ -358,3 +358,10 @@ if __name__ == '__main__':
 	listOfPairs2 = a.generateSameInputPairs();
 	a.writeInputPairsToFile(listOfPairs2, "all_same_pairs.txt");
 	a.writeOutputTargets(len(listOfPairs2), "out2.txt", "1");
+
+
+
+
+
+
+
