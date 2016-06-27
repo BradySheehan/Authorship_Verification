@@ -264,7 +264,34 @@ class File:
 		for i in range(begin, len(sortedResult)):
 			top_twenty.append(sortedResult[i][0]);
 		return top_twenty;
-
+	#A sequence of n consecutive punctuation marks (commas, hyphens, etc.)
+	#taken from D after reduction to punctuation characters.
+	def getPunctNGrams(self, N):
+		pass
+#A sequence of n consecutive characters in D .
+	def getCharNGrams(self, N):
+		pass
+#The n% most frequently occurring tokens in D .
+	def getMostFrequentTokens(self, N):
+		pass
+#The first k characters of a token.
+	def getTokenKPrefixes(self, N):
+		pass
+#The last k characters of a token.
+	def getTokenKSuffixes(self, N):
+		pass
+#The last k characters of each token within a token n-gram.
+	def getTokenKsuffixNGrams(self, K, N):
+		pass
+#The first k characters of each token within a token n-gram.
+	def getTokenKPrefixNGrams(self, K, N):
+		pass
+#The first n and last k characters of a token.
+	def getNPrefixKsuffixes(self, K, N):
+		pass
+#The last n characters of a token and the first k characters of the next token.
+	def getNSuffixKPrefixes(self, K, N):
+		pass
 
 #file = File("training/output/Bronte.txt");
 #file.printFields();
